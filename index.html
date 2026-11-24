@@ -79,6 +79,16 @@
           </article>
         </div>
 
+        <article class="card overview-calendar-card">
+          <div class="card-top"><div><p class="eyebrow">UM OLHAR SOBRE SUA ROTINA</p><h2>Meu mês em perspectiva</h2><p class="muted small">Selecione qualquer dia para rever seus registros.</p></div><div class="overview-month-controls"><button type="button" class="secondary-btn" id="overviewPrev" aria-label="Mês anterior">‹</button><strong id="overviewMonthLabel"></strong><button type="button" class="secondary-btn" id="overviewNext" aria-label="Próximo mês">›</button></div></div>
+          <div class="overview-calendar" id="overviewCalendar"></div>
+          <div class="overview-legend"><span>● Alimentação registrada</span><span>◆ Treino</span><span>♥ Autocuidado</span><span>☾ Sono</span></div>
+        </article>
+        <article class="card overview-day-card">
+          <div class="card-top"><div><p class="eyebrow">RESUMO DO DIA</p><h2 id="overviewDayTitle">Hoje</h2></div><span class="pill" id="overviewDayStatus">Acompanhe seus registros</span></div>
+          <div class="overview-metrics" id="overviewDayMetrics"></div>
+          <div class="overview-details" id="overviewDayDetails"></div>
+        </article>
         <div class="section-heading"><div><p class="eyebrow">PEQUENOS PASSOS, TODOS OS DIAS</p><h2>Meu hoje</h2></div><span class="date-chip" id="longDate"></span></div>
         <div class="dashboard-grid">
           <article class="card today-card">
