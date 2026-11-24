@@ -55,7 +55,7 @@
    $("cycleNextDate").textContent=next?next.toLocaleDateString("pt-BR",{day:"2-digit",month:"short",year:"numeric"}):"—";
    $("cyclePredictionNote").textContent=last?s.confidence:"Registre o primeiro dia da última menstruação para iniciar.";
    if(last){
-    const day=Math.floor((cycleDate(today)-cycleDate(last))/86400000)+1,cycleDay=((day-1)%s.avg)+1,ovDay=Math.max(10,s.avg-14),bleed=Number($("cycleBleedLength").value)||5;
+    const day=Math.floor((cycleDate(today)-cycleDate(last))/86400000)+1,cycleDay=((day-1)%s.avg)+1,ovDay=Math.max(10,s.avg-14),lastEntry=state.cycleStarts.find(x=>x.date===last),bleed=Number(lastEntry?.bleedLength)||5;
     let phase=cycleDay<=bleed?"menstrual":cycleDay<ovDay-2?"follicular":cycleDay<=ovDay+2?"ovulatory":"luteal";const info=cyclePhaseTips[phase];
     $("cyclePhaseSymbol").textContent=info.symbol;$("cyclePhaseName").textContent=info.name;$("cyclePhaseDay").textContent="Dia estimado "+cycleDay+" do ciclo de "+s.avg+" dias. "+info.desc;
     $("cycleNextPrediction").textContent="Próximo início estimado: "+cycleFmt(next.toISOString().slice(0,10));
@@ -64,7 +64,7 @@
    if(!s.starts.length){empty(host,"Seus registros aparecerão aqui. Você pode adicionar datas anteriores para calcular sua média.");return}
    s.starts.slice().reverse().forEach(d=>{const row=document.createElement("div");row.className="cycle-history-row";txt(row,"strong","",cycleFmt(d));const del=txt(row,"button","delete-feature","Excluir");del.onclick=()=>{if(confirm("Excluir este início de ciclo?")){state.cycleStarts=state.cycleStarts.filter(x=>x.date!==d);save();renderCycle()}};host.appendChild(row)})
   }
-  $("cycleStartDate").value=todayKey();
+  $("cycleStartDate").value=todayKey();$("cycleStartDate").max=todayKey();
   $("cycleForm").addEventListener("submit",e=>{e.preventDefault();const d=$("cycleStartDate").value;if(!d){alert("Escolha a data de início.");return}if(state.cycleStarts.some(x=>x.date===d)){alert("Essa data já está registrada.");return}state.cycleStarts.push({date:d,notes:$("cycleNotes").value.trim(),bleedLength:Number($("cycleBleedLength").value)||5});save();$("cycleNotes").value="";renderCycle();toast("Início do ciclo registrado. ♡")});
 
   function renderAll(){renderDreams();renderEvolution();renderCapsules();renderMoods();renderRituals();renderGlow();renderFinance();renderLife();renderSelfCare();renderTraining();renderCycle()}
