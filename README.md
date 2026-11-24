@@ -12,7 +12,7 @@ Diário gratuito de evolução pessoal, autocuidado, organização e planejament
 - Cápsula do tempo com mensagens e fotos que abrem na data escolhida.
 - Central de rituais e histórico de práticas.
 - Glow up tracker com metas e fotos de acompanhamento.
-- Vida financeira com receitas, despesas, categorias, contas, cartões, gráficos mensais e metas.
+- Vida financeira com receitas, despesas, categorias, contas, cartões, orçamento mensal, gráficos por categoria e metas.
 - Life List com experiências e atividades concluídas.
 - Menu de autocuidado com 30 ideias e três meditações guiadas em texto.
 - Exportação e importação de backup JSON.
