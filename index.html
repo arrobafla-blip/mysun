@@ -28,6 +28,7 @@
         <button class="nav-link" data-page="arcana"><span>✴</span> Minha coleção</button>
         <button class="nav-link" data-page="food"><span>♧</span> Alimentação</button>
         <button class="nav-link" data-page="monthlygoals"><span>✧</span> Metas do mês</button>
+        <button class="nav-link" data-page="training"><span>↗</span> Meus treinos</button>
         <button class="nav-link" data-page="spiritual"><span>☾</span> Espiritualidade</button>
 
         <div class="side-label extra-label">SEU FLORESCIMENTO</div>
@@ -165,6 +166,28 @@
         <article class="card food-calendar-card"><div class="food-calendar-legend"><span>Calorias registradas por dia</span><span>🍬 Doce com açúcar</span></div><div id="foodCalendar" class="food-calendar"></div><p class="muted small">Toque em um dia para ver ou adicionar as refeições daquela data. Dias sem registro aparecem sem calorias.</p></article>
         <div class="section-heading"><div><p class="eyebrow">SEU DIA, SEM CULPA</p><h2>Minhas refeições</h2></div></div><div id="foodMealList" class="food-meal-list"></div>
         <p class="note">A foto fica salva neste navegador, mas não é analisada automaticamente. Para alimentos caseiros, você pode preencher as calorias manualmente ou registrar sem calorias. O marcador de açúcar é uma anotação manual, não uma análise nutricional automática.</p>
+      </section>
+
+      <section class="page" id="page-training">
+        <div class="page-intro"><p class="eyebrow">MOVIMENTO NO SEU RITMO</p><h1>Meus <em>treinos</em></h1><p class="muted">Registre cada movimento, acompanhe sua constância e reconheça tudo o que seu corpo consegue fazer.</p></div>
+        <div class="training-summary">
+          <article class="card"><p class="eyebrow">TREINOS NA SEMANA</p><strong id="trainingWeekCount">0</strong><span>sessões registradas</span></article>
+          <article class="card"><p class="eyebrow">MUSCULAÇÃO</p><strong id="trainingStrengthCount">0/4–5</strong><span>dias nesta semana</span></article>
+          <article class="card"><p class="eyebrow">CARDIO</p><strong id="trainingCardioMinutes">0 min</strong><span>tempo acumulado na semana</span></article>
+        </div>
+        <article class="card feature-form-card">
+          <p class="eyebrow">NOVO REGISTRO</p><h2>Como foi seu movimento hoje?</h2>
+          <form id="trainingForm" class="feature-form">
+            <div class="feature-form-grid"><label>Data<input id="trainingDate" type="date" required></label><label>Tipo de atividade<select id="trainingType"><option>Musculação</option><option>Cardio</option><option>Yoga</option><option>Pilates</option><option>Caminhada</option><option>Corrida</option><option>Dança</option><option alongamento>Alongamento</option><option>Outro</option></select></label></div>
+            <div class="feature-form-grid"><label>Duração (minutos)<input id="trainingDuration" type="number" min="0" max="600" step="1" placeholder="Ex.: 45"></label><label>Passos (opcional)<input id="trainingSteps" type="number" min="0" max="100000" step="1" placeholder="Ex.: 8500"></label></div>
+            <label>Como foi? (opcional)<textarea id="trainingNotes" rows="2" maxlength="500" placeholder="Ex.: treino de pernas, caminhada leve, como me senti..."></textarea></label>
+            <label class="food-sugar-check"><input id="trainingGoalHit" type="checkbox" checked><span>Concluí o treino / cumpri o objetivo desta atividade.</span></label>
+            <button class="primary-btn" type="submit">Salvar treino</button>
+          </form>
+        </article>
+        <div class="section-heading"><div><p class="eyebrow">SUA CONSTÂNCIA</p><h2>Histórico de atividades</h2></div><span class="pill" id="trainingTotalCount">0 registros</span></div>
+        <div id="trainingHistory" class="training-history"></div>
+        <p class="note">A frequência semanal considera segunda a domingo. Cardio e outras atividades ficam registrados separadamente; uma sessão não precisa ser intensa para contar como movimento.</p>
       </section>
 
       <section class="page" id="page-spiritual">
