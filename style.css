@@ -52,3 +52,13 @@
 /* Acompanhamento do ciclo menstrual */
 .cycle-overview{display:grid;grid-template-columns:1.15fr .85fr;gap:14px;margin-bottom:18px}.cycle-current{background:linear-gradient(135deg,#fbf0ed,#fffaf6);text-align:center}.cycle-phase-symbol{display:inline-grid;place-items:center;font-size:30px;margin:8px 0}.cycle-current h2{font-family:"Playfair Display",serif;font-size:25px}.cycle-current p{max-width:540px;margin:8px auto}.cycle-next{font-size:12px;color:var(--rose-dark);margin-top:15px}.cycle-big-number{display:block;font:500 26px "Playfair Display";color:var(--rose-dark);margin:20px 0 8px}.cycle-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:22px}.cycle-stats div{display:grid;gap:5px;padding:12px;background:#faf4f1;border-radius:10px}.cycle-stats span{font-size:11px;color:var(--muted)}.cycle-stats b{font-size:14px}.cycle-phase-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px;margin-bottom:18px}.cycle-phase-grid .card{padding:20px}.cycle-phase-grid h3{font-family:"Playfair Display",serif;margin:6px 0}.cycle-phase-grid p,.cycle-phase-grid li{font-size:12px;line-height:1.65;color:var(--muted)}.cycle-phase-grid ul{padding-left:18px;margin-bottom:0}.cycle-history{display:grid;gap:8px}.cycle-history-row{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-bottom:1px solid var(--line);font-size:12px}
 @media(max-width:760px){.cycle-overview,.cycle-phase-grid{grid-template-columns:1fr}}
+
+/* Integração ciclo, sono e observação de padrões */
+.cycle-pattern-intro{max-width:850px;line-height:1.7;margin:-5px 0 15px}
+.cycle-pattern-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px;margin-bottom:20px}
+.cycle-pattern-card h3{font:500 19px "Playfair Display";margin:5px 0}
+.cycle-pattern-count{font-size:10px;color:#a17d83}
+.cycle-pattern-card ul{padding-left:18px;margin:12px 0 0}
+.cycle-pattern-card li{font-size:11px;line-height:1.7;color:var(--muted);margin:5px 0}
+.cycle-sleep-card{margin-bottom:18px}
+@media(max-width:760px){.cycle-pattern-grid{grid-template-columns:1fr}}
