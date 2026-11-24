@@ -33,7 +33,41 @@
     if(!items.length){empty(host,"Seu histórico de movimento começa com o primeiro registro. ♡");return}
     items.forEach(x=>{const row=document.createElement("article");row.className="training-entry";txt(row,"span","training-entry-icon",trainingIcons[x.type]||"✧");const main=document.createElement("div");main.className="training-entry-main";txt(main,"b","",x.type);txt(main,"small","",date(x.date)+(x.duration?" · "+x.duration+" min":"")+(x.steps?" · "+Number(x.steps).toLocaleString("pt-BR")+" passos":""));if(x.notes)txt(main,"p","",x.notes);row.appendChild(main);const side=document.createElement("div");side.className="training-entry-side";txt(side,"strong","",x.goalHit?"✓ Meta concluída":"Registrado");const del=txt(side,"button","training-delete","Excluir");del.type="button";del.onclick=()=>{if(confirm("Excluir este registro de treino?")){state.trainingSessions=state.trainingSessions.filter(y=>y.id!==x.id);save();renderTraining()}};row.appendChild(side);host.appendChild(row)})
   }
-  function renderAll(){renderDreams();renderEvolution();renderCapsules();renderMoods();renderRituals();renderGlow();renderFinance();renderLife();renderSelfCare();renderTraining()}
+
+  if(!Array.isArray(state.cycleStarts))state.cycleStarts=[];
+  const cyclePhaseTips={
+   menstrual:{name:"Fase menstrual",symbol:"🩸",desc:"Seu ciclo está no período menstrual estimado. Acolha seu corpo e ajuste o ritmo ao que sente."},
+   follicular:{name:"Fase folicular",symbol:"🌱",desc:"O corpo se prepara para a ovulação. Se estiver bem, retome atividades gradualmente."},
+   ovulatory:{name:"Janela ovulatória estimada",symbol:"☀️",desc:"A ovulação pode estar próxima. A data é apenas uma estimativa e pode variar."},
+   luteal:{name:"Fase lútea",symbol:"🍂",desc:"Após a ovulação estimada. Observe energia, sono, apetite e sintomas sem cobranças."}
+  };
+  const cycleDate=d=>new Date(d+"T12:00:00");
+  const cycleFmt=d=>cycleDate(d).toLocaleDateString("pt-BR",{day:"2-digit",month:"long",year:"numeric"});
+  function cycleStats(){
+   const starts=[...new Set(state.cycleStarts.map(x=>x.date).filter(Boolean))].sort();
+   const lengths=[];for(let i=1;i<starts.length;i++){const days=Math.round((cycleDate(starts[i])-cycleDate(starts[i-1]))/86400000);if(days>=15&&days<=60)lengths.push(days)}
+   const avg=lengths.length?Math.round(lengths.reduce((x,y)=>x+y,0)/lengths.length):28;
+   return {starts,lengths,avg,confidence:lengths.length>=2?"Estimativa baseada em pelo menos 3 inícios registrados.":lengths.length===1?"Estimativa inicial: há apenas um intervalo registrado.":"Estimativa inicial padrão de 28 dias; registre novos ciclos para personalizar."};
+  }
+  function renderCycle(){
+   const s=cycleStats(),today=todayKey(),last=s.starts[s.starts.length-1],next=last?new Date(cycleDate(last).getTime()+s.avg*86400000):null;
+   $("cycleCount").textContent=s.lengths.length+" intervalos";$("cycleAverage").textContent=s.lengths.length?s.avg+" dias":"Ainda não calculada";
+   $("cycleNextDate").textContent=next?next.toLocaleDateString("pt-BR",{day:"2-digit",month:"short",year:"numeric"}):"—";
+   $("cyclePredictionNote").textContent=last?s.confidence:"Registre o primeiro dia da última menstruação para iniciar.";
+   if(last){
+    const day=Math.floor((cycleDate(today)-cycleDate(last))/86400000)+1,cycleDay=((day-1)%s.avg)+1,ovDay=Math.max(10,s.avg-14),bleed=Number($("cycleBleedLength").value)||5;
+    let phase=cycleDay<=bleed?"menstrual":cycleDay<ovDay-2?"follicular":cycleDay<=ovDay+2?"ovulatory":"luteal";const info=cyclePhaseTips[phase];
+    $("cyclePhaseSymbol").textContent=info.symbol;$("cyclePhaseName").textContent=info.name;$("cyclePhaseDay").textContent="Dia estimado "+cycleDay+" do ciclo de "+s.avg+" dias. "+info.desc;
+    $("cycleNextPrediction").textContent="Próximo início estimado: "+cycleFmt(next.toISOString().slice(0,10));
+   }else{$("cyclePhaseSymbol").textContent="☾";$("cyclePhaseName").textContent="Registre sua menstruação";$("cyclePhaseDay").textContent="Para começar a estimar seu ciclo, informe o primeiro dia da última menstruação.";$("cycleNextPrediction").textContent="Sua previsão aparecerá aqui."}
+   $("cycleHistoryCount").textContent=s.starts.length+" registros";const host=$("cycleHistory");host.innerHTML="";
+   if(!s.starts.length){empty(host,"Seus registros aparecerão aqui. Você pode adicionar datas anteriores para calcular sua média.");return}
+   s.starts.slice().reverse().forEach(d=>{const row=document.createElement("div");row.className="cycle-history-row";txt(row,"strong","",cycleFmt(d));const del=txt(row,"button","delete-feature","Excluir");del.onclick=()=>{if(confirm("Excluir este início de ciclo?")){state.cycleStarts=state.cycleStarts.filter(x=>x.date!==d);save();renderCycle()}};host.appendChild(row)})
+  }
+  $("cycleStartDate").value=todayKey();
+  $("cycleForm").addEventListener("submit",e=>{e.preventDefault();const d=$("cycleStartDate").value;if(!d){alert("Escolha a data de início.");return}if(state.cycleStarts.some(x=>x.date===d)){alert("Essa data já está registrada.");return}state.cycleStarts.push({date:d,notes:$("cycleNotes").value.trim(),bleedLength:Number($("cycleBleedLength").value)||5});save();$("cycleNotes").value="";renderCycle();toast("Início do ciclo registrado. ♡")});
+
+  function renderAll(){renderDreams();renderEvolution();renderCapsules();renderMoods();renderRituals();renderGlow();renderFinance();renderLife();renderSelfCare();renderTraining();renderCycle()}
   ["evolutionDate","financeDate","trainingDate"].forEach(id=>$(id).value=todayKey());$("financeMonth").value=todayKey().slice(0,7);$("capsuleDate").min=todayKey();
   $("trainingForm").addEventListener("submit",e=>{e.preventDefault();const dateValue=$("trainingDate").value,duration=Number($("trainingDuration").value)||0,steps=Number($("trainingSteps").value)||0;if(!dateValue){alert("Escolha a data da atividade.");return}state.trainingSessions.push({id:Date.now(),date:dateValue,type:$("trainingType").value,duration,steps,notes:$("trainingNotes").value.trim(),goalHit:$("trainingGoalHit").checked});save();e.target.reset();$("trainingDate").value=todayKey();$("trainingGoalHit").checked=true;renderTraining();toast("Treino registrado. Cada movimento conta! ☼")});
   $("dreamForm").addEventListener("submit",async e=>{e.preventDefault();try{const p=await photo($("dreamPhoto").files[0]);state.dreams.push({id:Date.now(),title:$("dreamTitle").value.trim(),area:$("dreamArea").value,date:$("dreamDate").value,note:$("dreamNote").value.trim(),photo:p});save();e.target.reset();renderDreams();toast("Seu sonho ganhou um lugar especial ✧")}catch(x){alert(x.message)}});
