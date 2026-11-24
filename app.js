@@ -27,9 +27,16 @@ function dayNumber(date){if(!state.challengeStart)return 0;const a=new Date(stat
 function doneDays(){if(!state.challengeStart)return 0;let n=0;for(let i=0;i<21;i++){const d=new Date(state.challengeStart+"T12:00:00");d.setDate(d.getDate()+i);if(isDayDone(d.toISOString().slice(0,10)))n++}return n}
 function toast(msg){const el=document.getElementById("toast");el.textContent=msg;el.classList.add("show");setTimeout(()=>el.classList.remove("show"),2300)}
 function dateText(date){return new Date(date+"T12:00:00").toLocaleDateString("pt-BR",{day:"numeric",month:"long",year:"numeric"})}
+function renderMonthlyGoals(){
+ const now=new Date(),month=now.toLocaleDateString("pt-BR",{month:"long",year:"numeric"});
+ const label=document.getElementById("monthlyGoalsMonth");if(label)label.textContent=month.charAt(0).toUpperCase()+month.slice(1);
+ const ml=Number(state.water[todayKey()]||0),pct=Math.min(100,ml/2500*100);
+ const bar=document.getElementById("monthlyWaterProgress"),amount=document.getElementById("monthlyWaterAmount"),percent=document.getElementById("monthlyWaterPercent");
+ if(bar)bar.style.width=pct+"%";if(amount)amount.textContent=ml.toLocaleString("pt-BR")+" ml";if(percent)percent.textContent=Math.round(pct)+"%";
+}
 function render(){
  const now=new Date();document.getElementById("todayLabel").textContent=now.toLocaleDateString("pt-BR",{weekday:"long",day:"numeric",month:"long"});document.getElementById("longDate").textContent=now.toLocaleDateString("pt-BR",{day:"2-digit",month:"short"});document.getElementById("journalDate").textContent=dateText(todayKey());
- renderToday();renderWater();renderChallenge();renderHabits();renderJournal();renderArcana();renderMap();renderFood();renderSpiritual();
+ renderToday();renderWater();renderMonthlyGoals();renderChallenge();renderHabits();renderJournal();renderArcana();renderMap();renderFood();renderSpiritual();
 }
 function renderToday(){
  const host=document.getElementById("todayHabits"),l=logFor();host.innerHTML="";
