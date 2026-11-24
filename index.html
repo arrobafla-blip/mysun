@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f8f1ed">
+  <title>my sun — sua jornada de evolução</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="#" data-page="home">
+        <span class="brand-sun">☼</span><span>my <i>sun</i><small>YOUR GROWTH JOURNAL</small></span>
+      </a>
+      <div class="side-label">SEU ESPAÇO</div>
+      <nav class="nav">
+        <button class="nav-link active" data-page="home"><span>⌂</span> Visão geral</button>
+        <button class="nav-link" data-page="challenge"><span>✧</span> Desafio 21 dias</button>
+        <button class="nav-link" data-page="habits"><span>☼</span> Meus hábitos</button>
+        <button class="nav-link" data-page="journal"><span>♡</span> Meu diário</button>
+        <button class="nav-link" data-page="arcana"><span>✴</span> Minha coleção</button>
+        <button class="nav-link" data-page="food"><span>♧</span> Alimentação</button>
+        <button class="nav-link" data-page="spiritual"><span>☾</span> Espiritualidade</button>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="moon-card"><span class="moon-icon">☾</span><div><b>Um dia de cada vez.</b><small>Seu ritmo também é progresso.</small></div></div>
+        <button class="nav-link" id="backupBtn"><span>⇧</span> Exportar meu backup</button>
+        <label class="nav-link import-label"><span>⇩</span> Importar backup<input type="file" id="importFile" accept="application/json"></label>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <button class="mobile-menu" id="menuBtn" aria-label="Abrir menu">☰</button>
+        <div class="top-date" id="todayLabel"></div>
+        <div class="top-right"><span class="sun-dot"></span><span>seu espaço de florescimento</span></div>
+      </header>
+
+      <section class="page active" id="page-home">
+        <div class="welcome">
+          <div><p class="eyebrow">SEU NOVO CAPÍTULO COMEÇA AQUI</p><h1>Bom dia, <em>Flá.</em></h1><p class="muted">Não precisa ser perfeito. Só precisa ser seu.</p></div>
+          <div class="welcome-sun">☼</div>
+        </div>
+        <div class="hero-grid">
+          <article class="card journey-card">
+            <div class="card-top"><div><p class="eyebrow">SUA JORNADA ATUAL</p><h2>21 dias de intenção</h2></div><span class="pill" id="challengeStatus">Ainda não iniciada</span></div>
+            <div class="journey-content">
+              <div class="journey-number"><strong id="completedDays">0</strong><span>/ 21 dias completos</span></div>
+              <div class="progress-track"><div class="progress-fill" id="challengeProgress"></div></div>
+              <div class="journey-foot"><span id="challengeMessage">Toda transformação começa com uma escolha.</span><button class="text-button" data-page="challenge">Ver jornada →</button></div>
+            </div>
+          </article>
+          <article class="card arcana-feature">
+            <p class="eyebrow">SUA ENERGIA-GUIA</p>
+            <div class="feature-card-art"><span class="feature-number">0</span><span class="feature-symbol">☼</span><span class="feature-name">O LOUCO</span></div>
+            <div><h3>O começo de tudo</h3><p>Coragem para dar o primeiro passo, mesmo sem conhecer todo o caminho.</p></div>
+            <button class="text-button" data-page="arcana">Explorar os arcanos →</button>
+          </article>
+        </div>
+
+        <div class="section-heading"><div><p class="eyebrow">PEQUENOS PASSOS, TODOS OS DIAS</p><h2>Meu hoje</h2></div><span class="date-chip" id="longDate"></span></div>
+        <div class="dashboard-grid">
+          <article class="card today-card">
+            <div class="card-top"><div><h3>Meus compromissos</h3><p class="muted small">Marque o que você realizou hoje.</p></div><span class="count-badge" id="todayCount">0/0</span></div>
+            <div id="todayHabits" class="habit-list"></div>
+            <button class="text-button add-inline" data-page="habits">Personalizar hábitos →</button>
+          </article>
+          <article class="card water-card">
+            <p class="eyebrow">CUIDADO EM MOVIMENTO</p><h3>Meu ritual de água</h3>
+            <div class="water-visual"><div class="water-glass"><div class="water-level" id="waterLevel"></div><span>💧</span></div><div><strong id="waterCount">0</strong><span class="muted"> / <span id="waterGoalLabel">3</span> garrafas</span><p class="small muted"><span id="waterMl">0</span> ml · garrafa de <span id="bottleSizeLabel">600</span> ml</p></div></div>
+            <div class="water-actions"><button class="round-btn" id="waterMinus">−</button><button class="primary-btn" id="waterPlus">+ Registrar garrafa</button></div>
+            <button class="text-button" id="waterGoalBtn">Ajustar minha meta</button>
+          </article>
+        </div>
+        <div class="section-heading compact"><div><p class="eyebrow">SEU CAMINHO EM CONSTRUÇÃO</p><h2>Mapa da jornada</h2></div><button class="text-button" data-page="challenge">Ver detalhes →</button></div>
+        <article class="card map-card"><div class="map-line" id="miniMap"></div><div class="map-caption"><span>O despertar</span><span>A construção</span><span>A transformação</span></div></article>
+      </section>
+
+      <section class="page" id="page-challenge">
+        <div class="page-intro"><p class="eyebrow">UM COMPROMISSO COM VOCÊ</p><h1>Desafio <em>21 dias</em></h1><p class="muted">21 oportunidades de escolher a pessoa que você quer se tornar.</p></div>
+        <article class="card challenge-banner"><div><p class="eyebrow">SUA JORNADA</p><h2 id="challengeHeadline">Tudo começa com uma intenção.</h2><p class="muted" id="challengeSub">Inicie seu ciclo quando estiver pronta.</p><button class="primary-btn" id="startChallenge">Iniciar meu desafio</button></div><div class="banner-moon">☾<span>✧</span></div></article>
+        <div class="section-heading"><div><p class="eyebrow">21 PASSOS</p><h2>Calendário de evolução</h2></div><span class="pill" id="challengeCounter">0 de 21 completos</span></div>
+        <div class="card calendar-card"><div class="day-grid" id="challengeDays"></div><div class="legend"><span><i class="legend-dot done"></i> Concluído</span><span><i class="legend-dot partial"></i> Em andamento</span><span><i class="legend-dot"></i> A iniciar</span></div></div>
+        <div class="phase-grid">
+          <article class="phase-card"><span class="phase-icon">☼</span><p class="eyebrow">DIAS 1—7</p><h3>O Despertar</h3><b>0 · O Louco</b><p>Permita-se começar. A coragem vem antes da certeza.</p></article>
+          <article class="phase-card"><span class="phase-icon">♌</span><p class="eyebrow">DIAS 8—14</p><h3>A Construção</h3><b>VIII · A Força</b><p>Consistência não é rigidez: é voltar a escolher.</p></article>
+          <article class="phase-card"><span class="phase-icon">✧</span><p class="eyebrow">DIAS 15—21</p><h3>A Transformação</h3><b>XXI · O Mundo</b><p>Reconheça o caminho que você percorreu.</p></article>
+        </div>
+        <p class="note">Um dia só conta como concluído quando todos os hábitos ativos forem marcados. Dias incompletos permanecem no calendário e você pode continuar no dia seguinte, sem perder o que já conquistou.</p>
+      </section>
+
+      <section class="page" id="page-habits">
+        <div class="page-intro"><p class="eyebrow">SEUS RITUAIS COTIDIANOS</p><h1>Meus <em>hábitos</em></h1><p class="muted">Escolha compromissos possíveis e construa uma rotina que faça sentido para você.</p></div>
+        <article class="card">
+          <div class="card-top"><div><h2>Minha lista de hábitos</h2><p class="muted small">Você pode adaptar esta lista quando quiser.</p></div><span class="count-badge" id="habitTotal"></span></div>
+          <div id="manageHabits" class="manage-habits"></div>
+          <form id="addHabitForm" class="add-habit-form"><input id="newHabit" maxlength="45" placeholder="Ex.: Caminhar 20 minutos" required><select id="newCategory"><option value="Corpo">Corpo</option><option value="Nutrição">Nutrição</option><option value="Autocuidado">Autocuidado</option><option value="Mente">Mente</option><option value="Descanso">Descanso</option></select><button class="primary-btn">Adicionar</button></form>
+        </article>
+        <div class="tip-box"><span>✧</span><p><b>Um lembrete gentil</b><br>Você pode incluir descanso ativo, alongamento ou uma caminhada como movimento. Cuidar do corpo também é respeitar seus limites.</p></div>
+      </section>
+
+      <section class="page" id="page-journal">
+        <div class="page-intro"><p class="eyebrow">UM ENCONTRO COM VOCÊ</p><h1>Meu <em>diário</em></h1><p class="muted">Registre o que sente, o que aprende e aquilo de que se orgulha.</p></div>
+        <article class="card journal-card"><div class="card-top"><div><p class="eyebrow">REGISTRO DE HOJE</p><h2 id="journalDate"></h2></div><span class="journal-flower">✿</span></div>
+          <label>Como estou me sentindo hoje?<select id="mood"><option value="">Escolha uma sensação</option><option>☀️ Feliz e disposta</option><option>🌷 Tranquila</option><option>🌙 Cansada</option><option>☁️ Sobrecarregada</option><option>🔥 Motivada</option><option>🌧️ Sensível</option></select></label>
+          <label>Minha pequena vitória de hoje<textarea id="win" rows="3" placeholder="Até as pequenas conquistas merecem ser reconhecidas..."></textarea></label>
+          <label>O que quero fazer diferente amanhã?<textarea id="tomorrow" rows="3" placeholder="Escreva sem julgamentos."></textarea></label>
+          <label>Uma coisa pela qual sou grata<textarea id="gratitude" rows="2" placeholder="Hoje eu agradeço por..."></textarea></label>
+          <button class="primary-btn" id="saveJournal">Salvar reflexão</button><span class="save-status" id="journalStatus"></span>
+        </article>
+        <div class="section-heading"><div><p class="eyebrow">SUAS MEMÓRIAS</p><h2>Registros anteriores</h2></div></div><div id="journalHistory" class="history-list"></div>
+      </section>
+
+      <section class="page" id="page-arcana">
+        <div class="page-intro"><p class="eyebrow">SÍMBOLOS DA SUA TRANSFORMAÇÃO</p><h1>Minha <em>coleção</em></h1><p class="muted">Os 22 Arcanos Maiores inspiram as etapas da sua jornada. Desbloqueie cartas ao acumular experiência.</p></div>
+        <article class="card collection-progress"><div><p class="eyebrow">SUA EXPERIÊNCIA</p><h2><span id="xpTotal">0</span> pontos de luz</h2><p class="muted small">Cada hábito concluído soma pontos para sua coleção.</p></div><div class="level-seal"><span>✧</span><small id="levelName">Iniciante</small></div></article>
+        <div class="section-heading"><div><p class="eyebrow">22 ARCANOS</p><h2>Cartas da jornada</h2></div><span class="pill" id="cardCount">1 / 22 reveladas</span></div>
+        <div class="arcana-grid" id="arcanaGrid"></div>
+        <p class="note">As cartas são símbolos de reflexão e motivação, não previsões. A coleção é desbloqueada pelo seu progresso dentro do site.</p>
+      </section>
+
+
+      <section class="page" id="page-food">
+        <div class="page-intro"><p class="eyebrow">NUTRIR TAMBÉM É CUIDAR</p><h1>Minha <em>alimentação</em></h1><p class="muted">Um registro gentil do que você come, sem cobranças ou julgamentos.</p></div>
+        <div class="food-summary-grid"><article class="card food-total-card"><p class="eyebrow">REGISTRO DE HOJE</p><div class="food-total-line"><strong id="foodCalories">0</strong><span>kcal estimadas</span></div><p class="muted small" id="foodMealCount">0 refeições</p></article><article class="card food-photo-card"><span class="food-photo-icon">✿</span><div><h3>Comer com presença</h3><p class="muted small">Registre refeições, perceba padrões e celebre pequenas escolhas.</p></div></article></div>
+        <article class="card food-entry-card"><p class="eyebrow">NOVO REGISTRO</p><h2>O que você comeu?</h2><form id="foodForm"><div class="food-form-grid"><label>Refeição<select id="mealType"><option>Café da manhã</option><option>Lanche da manhã</option><option>Almoço</option><option>Lanche da tarde</option><option>Jantar</option><option>Ceia</option></select></label><label>Alimento<input id="foodName" placeholder="Ex.: arroz, feijão e frango" required></label></div><div class="food-search-row"><button type="button" class="secondary-btn" id="foodSearchBtn">Pesquisar calorias</button><span class="muted small" id="foodSearchStatus">Pesquisa opcional na base Open Food Facts.</span></div><div class="food-results" id="foodSearchResults"></div><div class="food-form-grid food-numbers"><label>Quantidade (g)<input id="foodGrams" type="number" min="0" step="1" value="100"></label><label>kcal por 100 g<input id="foodKcal100" type="number" min="0" step="0.1" placeholder="Preencha ou pesquise"></label><div class="food-kcal-preview"><span>Estimativa desta porção</span><strong id="foodKcalPreview">— kcal</strong></div></div><label class="photo-upload-label">Foto da refeição<input id="mealPhoto" type="file" accept="image/*"><span class="upload-hint">Adicionar uma foto (opcional)</span></label><div class="meal-photo-preview" id="mealPhotoPreview"></div><div class="food-form-actions"><button class="primary-btn" type="submit">Salvar refeição</button><span class="muted small">As calorias são estimativas; confira os dados quando possível.</span></div></form></article>
+        <div class="section-heading"><div><p class="eyebrow">SEU DIA, SEM CULPA</p><h2>Minhas refeições</h2></div></div><div id="foodMealList" class="food-meal-list"></div>
+        <p class="note">A foto fica salva neste navegador, mas não é analisada automaticamente. Para alimentos caseiros, você pode preencher as calorias manualmente ou registrar sem calorias.</p>
+      </section>
+
+      <section class="page" id="page-spiritual">
+        <div class="page-intro"><p class="eyebrow">CICLOS, INTENÇÃO E PRESENÇA</p><h1>Espiritualidade <em>& autoconhecimento</em></h1><p class="muted">Um espaço para observar os ciclos, criar pequenos rituais e se escutar com mais carinho.</p></div>
+        <article class="card moon-now-card"><div><p class="eyebrow">CÉU DO MOMENTO · 24 NOV 2026</p><h2>🌕 Lua Cheia em Gêmeos</h2><p class="muted">A Lua Cheia acontece hoje às 11h54 (horário de Brasília). Um convite simbólico à clareza, à comunicação e à celebração do que amadureceu.</p><p class="small muted">Use a fase lunar como inspiração pessoal, não como regra ou garantia de resultados.</p></div><div class="moon-big">🌕</div></article>
+        <div class="section-heading"><div><p class="eyebrow">SEU CALENDÁRIO LUNAR</p><h2>Próximas fases da Lua</h2></div><span class="pill">Nov — Dez 2026</span></div>
+        <div class="moon-timeline">
+          <article class="moon-event"><span class="moon-event-icon">🌗</span><div><small>01 DE DEZEMBRO · 03H08</small><h3>Quarto Minguante</h3><p>Desapegar, organizar, limpar excessos e encerrar pendências.</p></div></article>
+          <article class="moon-event"><span class="moon-event-icon">🌑</span><div><small>08 DE DEZEMBRO · 21H51</small><h3>Lua Nova em Sagitário</h3><p>Recomeços, visão de futuro, estudos, expansão e novas intenções.</p></div></article>
+          <article class="moon-event"><span class="moon-event-icon">🌓</span><div><small>17 DE DEZEMBRO · 02H42</small><h3>Quarto Crescente</h3><p>Movimento, coragem, disciplina e primeiros passos concretos.</p></div></article>
+          <article class="moon-event"><span class="moon-event-icon">🌕</span><div><small>23 DE DEZEMBRO · 22H28</small><h3>Lua Cheia em Câncer</h3><p>Afeto, família, acolhimento, gratidão e reconhecimento.</p></div></article>
+          <article class="moon-event"><span class="moon-event-icon">🌗</span><div><small>30 DE DEZEMBRO · 15H59</small><h3>Quarto Minguante</h3><p>Fechar o ano com leveza, revisar escolhas e liberar o que não acompanha você.</p></div></article>
+          <article class="moon-event"><span class="moon-event-icon">🌑</span><div><small>07 DE JANEIRO · 17H24</small><h3>Lua Nova em Capricórnio</h3><p>Planejamento, estrutura, metas sustentáveis e compromisso com o longo prazo.</p></div></article>
+          <article class="moon-event"><span class="moon-event-icon">🌓</span><div><small>15 DE JANEIRO · 17H34</small><h3>Quarto Crescente</h3><p>Dar continuidade ao que começou e fortalecer a disciplina.</p></div></article>
+          <article class="moon-event"><span class="moon-event-icon">🌕</span><div><small>22 DE JANEIRO · 09H17</small><h3>Lua Cheia em Leão</h3><p>Expressão, criatividade, reconhecimento e confiança.</p></div></article>
+          <article class="moon-event"><span class="moon-event-icon">🌗</span><div><small>29 DE JANEIRO · 07H55</small><h3>Quarto Minguante</h3><p>Revisar prioridades e encerrar o que perdeu sentido.</p></div></article>
+        </div>
+        <div class="section-heading"><div><p class="eyebrow">PRÁTICAS SIMBÓLICAS</p><h2>Rituais por intenção</h2></div></div>
+        <div class="ritual-grid">
+          <article class="card ritual-card"><span>🕯️</span><p class="eyebrow">LIMPEZA & RENOVAÇÃO</p><h3>Ritual de limpeza energética</h3><p>Abra as janelas, organize um pequeno espaço, passe um pano com água e algumas gotas de um produto de limpeza adequado à superfície. Enquanto arruma, imagine abrindo espaço para o novo.</p><small>Ideal como prática simbólica na Lua Minguante.</small></article>
+          <article class="card ritual-card"><span>🌿</span><p class="eyebrow">PROSPERIDADE</p><h3>Ritual de caminhos abertos</h3><p>Escreva uma intenção financeira específica e realista. Anote também uma ação concreta para esta semana: revisar gastos, enviar uma proposta ou guardar um valor possível. Guarde o papel na sua agenda.</p><small>Intenção + ação prática na Lua Nova ou Crescente.</small></article>
+          <article class="card ritual-card"><span>🌷</span><p class="eyebrow">BELEZA & AUTOESTIMA</p><h3>Ritual de amor-próprio</h3><p>Prepare um momento de autocuidado: banho confortável, hidratação com seu produto habitual, cuidado com os cabelos e uma roupa que faça você se sentir bem. Diga em voz alta uma qualidade que reconhece em si.</p><small>Um carinho possível em qualquer fase.</small></article>
+          <article class="card ritual-card"><span>✨</span><p class="eyebrow">FEITIÇO DE INTENÇÃO</p><h3>Encantamento da palavra</h3><p>Escreva uma frase no presente, como “cultivo oportunidades alinhadas ao meu trabalho”. Leia com atenção, visualize o próximo passo e transforme a frase em uma atitude pequena no mesmo dia.</p><small>Um feitiço simbólico, sem promessa sobrenatural.</small></article>
+        </div>
+        <div class="section-heading"><div><p class="eyebrow">EDIÇÃO ESPECIAL · VIRADA DE CICLO</p><h2>Rituais de Ano Novo</h2></div><span class="pill">31 dez · 1 jan</span></div>
+        <article class="card new-year-intro"><p class="eyebrow">UM NOVO CAPÍTULO</p><h3>Prepare o espaço para aquilo que deseja cultivar.</h3><p>Escolha os rituais que fizerem sentido para você. Não é preciso fazer tudo: a intenção, a presença e as atitudes possíveis importam mais do que seguir regras.</p></article>
+        <div class="ritual-grid new-year-grid">
+          <article class="card ritual-card"><span>🏡</span><p class="eyebrow">PARA A CASA</p><h3>Casa leve, caminhos abertos</h3><p>Antes da virada, escolha um cômodo para organizar. Doe ou descarte com responsabilidade o que não usa, limpe as superfícies, abra as janelas por alguns minutos e coloque uma música que represente o novo ciclo. Finalize escrevendo uma palavra para a energia que deseja cultivar em casa.</p><small>Você vai precisar: pano, materiais de limpeza habituais, papel e caneta.</small></article>
+          <article class="card ritual-card"><span>🛁</span><p class="eyebrow">PARA O CORPO</p><h3>Banho de renovação e carinho</h3><p>Prepare um banho confortável, com água em temperatura agradável. Durante o banho, respire com calma e imagine encerrando o ciclo anterior. Depois, hidrate a pele com seus produtos habituais, cuide dos cabelos e vista algo em que se sinta bem. Ervas são opcionais: não é necessário colocá-las na água nem na pele.</p><small>Você vai precisar: seu sabonete e hidratante habituais e alguns minutos só seus.</small></article>
+          <article class="card ritual-card"><span>💛</span><p class="eyebrow">PARA A PROSPERIDADE</p><h3>O pote das oportunidades</h3><p>Em um pote ou envelope, coloque um papel com três intenções para o ano: uma financeira, uma profissional e uma pessoal. Ao lado de cada intenção, escreva uma atitude concreta que depende de você. Guarde o pote em um lugar visível e revisite suas ações ao longo do mês.</p><small>Você vai precisar: pote ou envelope, papel e caneta. Moedas são opcionais e simbólicas.</small></article>
+          <article class="card ritual-card"><span>🕯️</span><p class="eyebrow">PARA PROTEÇÃO E PAZ</p><h3>Ritual de luz e proteção</h3><p>Escreva o que deseja preservar no novo ano: sua paz, seus limites, sua saúde, seus vínculos. Leia em voz alta e escolha uma atitude para proteger cada item. Se quiser usar uma vela, mantenha-a em suporte estável, longe de tecidos e nunca a deixe acesa sem supervisão; uma vela elétrica também funciona.</p><small>Você vai precisar: papel e caneta; vela opcional.</small></article>
+          <article class="card ritual-card"><span>📝</span><p class="eyebrow">PARA DEIXAR IR</p><h3>Carta de encerramento</h3><p>Escreva uma carta para o ano que termina: o que doeu, o que ensinou, o que você conseguiu e o que não quer carregar. Agradeça pelo que fizer sentido e escolha o destino do papel: guardar, rasgar e reciclar. Não é necessário queimar nada para simbolizar um encerramento.</p><small>Você vai precisar: papel, caneta e um lugar tranquilo.</small></article>
+          <article class="card ritual-card"><span>🌅</span><p class="eyebrow">PARA RECEBER O NOVO</p><h3>Primeira manhã com intenção</h3><p>No primeiro dia do ano, antes de mergulhar nas tarefas, beba água, respire por alguns instantes e escreva como deseja se sentir neste novo ciclo. Escolha uma ação pequena para realizar ainda na primeira semana. Comece possível, não perfeito.</p><small>Você vai precisar: água, caderno e alguns minutos de presença.</small></article>
+        </div>
+        <article class="card reflection-card year-intentions"><p class="eyebrow">SEU PEQUENO COMPROMISSO</p><h3>O que quero convidar para o meu novo ano?</h3><textarea id="newYearIntentions" rows="4" placeholder="Quero cultivar... Quero deixar para trás... Meu primeiro passo será..."></textarea><div class="reflection-actions"><button class="primary-btn" id="saveNewYearIntentions">Salvar minhas intenções</button><span class="save-status" id="newYearStatus"></span></div></article>
+        <div class="section-heading"><div><p class="eyebrow">ESCUTA INTERIOR</p><h2>Meu momento de autoconhecimento</h2></div></div>
+        <article class="card reflection-card"><p class="eyebrow">PERGUNTA PARA REFLETIR</p><h3 id="reflectionPrompt">O que estou pronta para deixar ir?</h3><textarea id="spiritualReflection" rows="4" placeholder="Escreva livremente. Este espaço é só seu..."></textarea><div class="reflection-actions"><button class="secondary-btn" id="newReflectionPrompt">Outra pergunta</button><button class="primary-btn" id="saveSpiritualReflection">Salvar reflexão</button><span class="save-status" id="spiritualStatus"></span></div></article>
+        <p class="note">Os rituais desta página são práticas simbólicas de intenção e autocuidado. Não substituem ações concretas nem garantem prosperidade, beleza ou qualquer resultado. Evite ingerir misturas, aplicar ingredientes desconhecidos na pele ou usar fogo sem supervisão.</p>
+      </section>
+
+      <footer>feito com intenção <span>☼</span> my sun · sua jornada, seu ritmo</footer>
+    </main>
+  </div>
+  <div class="toast" id="toast"></div>
+  <script src="app.js"></script>
+</body>
+</html>
