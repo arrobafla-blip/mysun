@@ -6,7 +6,7 @@ Diário gratuito de evolução pessoal, autocuidado, organização e planejament
 - Visão geral, desafio de 21 dias, hábitos e hidratação ajustável.
 - Diário pessoal, mood tracker e diário de evolução.
 - Coleção dos 22 Arcanos Maiores.
-- Alimentação com fotos, estimativas de calorias e busca Open Food Facts.
+- Alimentação com fotos, estimativas de calorias, busca Open Food Facts, horários das refeições, rotina de horários, registro manual de doces com açúcar, intervalo entre refeições e calendário mensal de calorias.
 - Espiritualidade, calendário lunar, rituais e intenções de Ano Novo.
 - Universo de sonhos com mural de imagens.
 - Cápsula do tempo com mensagens e fotos que abrem na data escolhida.

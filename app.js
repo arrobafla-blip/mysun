@@ -49,17 +49,51 @@ function renderJournal(){const j=state.journals[todayKey()]||{};["mood","win","t
 function renderArcana(){const xp=state.xp||0,unlocked=Math.min(22,Math.max(1,Math.floor(xp/40)+1));document.getElementById("xpTotal").textContent=xp;document.getElementById("cardCount").textContent=`${unlocked} / 22 reveladas`;document.getElementById("levelName").textContent=unlocked>=18?"Iluminada":unlocked>=10?"Florescendo":unlocked>=5?"Despertando":"Iniciante";const host=document.getElementById("arcanaGrid");host.innerHTML="";arcana.forEach((a,i)=>{const open=i<unlocked,card=document.createElement("div");card.className="arcana-card"+(open?"":" locked");card.innerHTML=`<div class="tarot-inner"><span class="tarot-num"></span><span class="tarot-symbol"></span><span class="tarot-name"></span></div><div class="arcana-caption"></div>`;card.querySelector(".tarot-num").textContent=a[0];card.querySelector(".tarot-symbol").textContent=open?a[2]:"✧";card.querySelector(".tarot-name").textContent=open?a[1].toUpperCase():"CARTA A REVELAR";card.querySelector(".arcana-caption").textContent=open?a[3]:`${Math.max(0,i*40-xp)} pts para revelar`;host.appendChild(card)})}
 function renderMap(){const host=document.getElementById("miniMap");host.innerHTML="";const n=doneDays();[1,8,15,21].forEach((v,i)=>{const el=document.createElement("div");el.className="map-node"+(n>=v?" reached":"");el.textContent=["☼","♌","✧","◎"][i];host.appendChild(el)})}
 
-function todayMeals(){return state.meals[todayKey()]||(state.meals[todayKey()]=[])}
+function foodDate(){return document.getElementById("foodEntryDate").value||todayKey()}
+function mealsFor(date){return state.meals[date]||(state.meals[date]=[])}
+function foodMonth(){return document.getElementById("foodCalendarMonth").value||todayKey().slice(0,7)}
+function foodDayTotal(date){return (state.meals[date]||[]).reduce((s,m)=>s+(Number(m.kcal)||0),0)}
+function foodHasSugar(date){return (state.meals[date]||[]).some(m=>m.sugar===true)}
 function renderFood(){
- const meals=todayMeals(),total=meals.reduce((sum,m)=>sum+(Number(m.kcal)||0),0);
+ const date=foodDate(),meals=mealsFor(date).slice().sort((a,b)=>(a.time||"").localeCompare(b.time||"")),total=meals.reduce((sum,m)=>sum+(Number(m.kcal)||0),0);
  document.getElementById("foodCalories").textContent=Math.round(total).toLocaleString("pt-BR");
- document.getElementById("foodMealCount").textContent=`${meals.length} ${meals.length===1?"refeição":"refeições"}`;
+ document.getElementById("foodMealCount").textContent=meals.length+" "+(meals.length===1?"refeição":"refeições")+" · "+dateText(date);
+ document.getElementById("foodDaySugar").textContent=foodHasSugar(date)?"🍬 Teve doce com açúcar":"♡ Sem doce com açúcar registrado";
  const host=document.getElementById("foodMealList");host.innerHTML="";
- if(!meals.length){host.innerHTML='<div class="empty-meals">☼<br><br>Seu diário está esperando o primeiro registro de hoje.</div>';return}
- meals.forEach((m,i)=>{const item=document.createElement("article");item.className="food-meal-item";if(m.photo){const img=document.createElement("img");img.src=m.photo;img.alt="Foto da refeição";item.appendChild(img)}
- const info=document.createElement("div");info.className="food-meal-info";const type=document.createElement("div");type.className="meal-type";type.textContent=m.type;const name=document.createElement("h3");name.textContent=m.name;const qty=document.createElement("p");qty.textContent=`${m.grams?m.grams+" g · ":""}${m.kcal?Math.round(m.kcal)+" kcal estimadas":"calorias não informadas"}`;const del=document.createElement("button");del.className="meal-delete";del.textContent="×";del.title="Excluir refeição";del.addEventListener("click",()=>{if(confirm("Excluir este registro alimentar?")){meals.splice(i,1);save();renderFood()}});info.append(type,name,qty);if(m.kcal){const kcal=document.createElement("strong");kcal.textContent=`${Math.round(m.kcal)} kcal`;info.appendChild(kcal)}item.append(info,del);host.appendChild(item)})
+ if(!meals.length){host.innerHTML='<div class="empty-meals">☼<br><br>Nenhuma refeição registrada neste dia.</div>'}
+ meals.forEach(m=>{const item=document.createElement("article");item.className="food-meal-item";if(m.photo){const img=document.createElement("img");img.src=m.photo;img.alt="Foto da refeição";item.appendChild(img)}
+ const info=document.createElement("div");info.className="food-meal-info";const type=document.createElement("div");type.className="meal-type";type.textContent=(m.time?m.time+" · ":"")+m.type;const name=document.createElement("h3");name.textContent=m.name;
+ const qty=document.createElement("p");qty.textContent=(m.grams?m.grams+" g · ":"")+(m.kcal!==null&&m.kcal!==undefined?Math.round(m.kcal)+" kcal estimadas":"calorias não informadas")+(m.sugar?" · doce com açúcar":"");
+ const del=document.createElement("button");del.className="meal-delete";del.textContent="×";del.title="Excluir refeição";del.addEventListener("click",()=>{if(confirm("Excluir este registro alimentar?")){state.meals[date]=state.meals[date].filter(x=>x!==m);save();renderFood()}});
+ info.append(type,name,qty);if(m.kcal!==null&&m.kcal!==undefined){const kcal=document.createElement("strong");kcal.textContent=Math.round(m.kcal)+" kcal";info.appendChild(kcal)}item.append(info,del);host.appendChild(item)});
+ renderFoodCalendar();renderFasting(date);
 }
-
+function renderFoodSchedule(){
+ const defaults={"Café da manhã":"07:30","Lanche da manhã":"10:00","Almoço":"12:30","Lanche da tarde":"15:30","Jantar":"19:00","Ceia":"21:00"};
+ if(!state.foodSchedule||typeof state.foodSchedule!=="object")state.foodSchedule={...defaults};
+ const host=document.getElementById("foodScheduleFields");host.innerHTML="";
+ Object.entries(defaults).forEach(([meal,defaultTime])=>{const label=document.createElement("label");label.textContent=meal;const input=document.createElement("input");input.type="time";input.value=state.foodSchedule[meal]||defaultTime;input.dataset.meal=meal;label.appendChild(input);host.appendChild(label)});
+}
+function renderFasting(date){
+ const box=document.getElementById("foodFastingStatus"),current=(state.meals[date]||[]).filter(m=>m.time).slice().sort((a,b)=>a.time.localeCompare(b.time));
+ const prev=new Date(date+"T12:00:00");prev.setDate(prev.getDate()-1);const prevKey=prev.getFullYear()+"-"+String(prev.getMonth()+1).padStart(2,"0")+"-"+String(prev.getDate()).padStart(2,"0");
+ const prior=(state.meals[prevKey]||[]).filter(m=>m.time).slice().sort((a,b)=>a.time.localeCompare(b.time));
+ if(!current.length||!prior.length){box.textContent="Registre o horário da última refeição de ontem e da primeira refeição deste dia para visualizar o intervalo.";return}
+ const [ph,pm]=prior[prior.length-1].time.split(":").map(Number),[ch,cm]=current[0].time.split(":").map(Number);
+ const from=new Date(prevKey+"T00:00:00");from.setHours(ph,pm,0,0);const to=new Date(date+"T00:00:00");to.setHours(ch,cm,0,0);let minutes=Math.round((to-from)/60000);
+ if(minutes<0){box.textContent="Confira os horários registrados para calcular o intervalo.";return}
+ box.textContent="Intervalo entre registros: "+Math.floor(minutes/60)+"h"+String(minutes%60).padStart(2,"0")+" · da última refeição ("+prior[prior.length-1].time+") à primeira ("+current[0].time+"). É apenas um registro de horário, não uma meta.";
+}
+function renderFoodCalendar(){
+ const host=document.getElementById("foodCalendar");host.innerHTML="";const month=foodMonth(),parts=month.split("-").map(Number),year=parts[0],mo=parts[1],first=new Date(year,mo-1,1),days=new Date(year,mo,0).getDate(),offset=first.getDay();
+ document.getElementById("foodCalendarLabel").textContent=first.toLocaleDateString("pt-BR",{month:"long",year:"numeric"});
+ ["Dom","Seg","Ter","Qua","Qui","Sex","Sáb"].forEach(d=>{const el=document.createElement("div");el.className="food-cal-weekday";el.textContent=d;host.appendChild(el)});
+ for(let n=0;n<offset;n++){const blank=document.createElement("div");blank.className="food-cal-blank";host.appendChild(blank)}
+ for(let day=1;day<=days;day++){const key=year+"-"+String(mo).padStart(2,"0")+"-"+String(day).padStart(2,"0"),records=state.meals[key]||[],cell=document.createElement("button");cell.type="button";cell.className="food-cal-day"+(key===foodDate()?" selected":"")+(records.length?" has-records":"");
+ const num=document.createElement("b");num.textContent=day;cell.appendChild(num);const kcal=document.createElement("small");const total=foodDayTotal(key);kcal.textContent=records.length?Math.round(total).toLocaleString("pt-BR")+" kcal":"—";cell.appendChild(kcal);
+ if(foodHasSugar(key)){const sugar=document.createElement("span");sugar.className="food-cal-sugar";sugar.textContent="🍬";sugar.title="Doce com açúcar registrado";cell.appendChild(sugar)}
+ cell.addEventListener("click",()=>{document.getElementById("foodEntryDate").value=key;renderFood()});host.appendChild(cell)}
+}
 const reflectionPrompts=["O que estou pronta para deixar ir?","Que parte de mim precisa de mais acolhimento?","O que significa prosperidade para mim neste momento?","Qual pequeno passo me aproximaria da vida que desejo?","Que padrão já não combina com a pessoa que estou me tornando?","Do que eu gostaria de me orgulhar daqui a seis meses?"];
 function renderSpiritual(){const entry=state.spiritualReflections?.[todayKey()]||"";document.getElementById("spiritualReflection").value=entry;document.getElementById("newYearIntentions").value=state.newYearIntentions||"";}
 document.getElementById("newReflectionPrompt").addEventListener("click",()=>{const current=document.getElementById("reflectionPrompt").textContent;const options=reflectionPrompts.filter(x=>x!==current);document.getElementById("reflectionPrompt").textContent=options[Math.floor(Math.random()*options.length)]});
@@ -88,9 +122,15 @@ document.getElementById("mealPhoto").addEventListener("change",e=>{
  const reader=new FileReader();reader.onload=()=>{const img=new Image();img.onload=()=>{const max=720,scale=Math.min(1,max/Math.max(img.width,img.height)),canvas=document.createElement("canvas");canvas.width=Math.round(img.width*scale);canvas.height=Math.round(img.height*scale);canvas.getContext("2d").drawImage(img,0,0,canvas.width,canvas.height);selectedMealPhoto=canvas.toDataURL("image/jpeg",.68);document.getElementById("mealPhotoPreview").innerHTML=`<img src="${selectedMealPhoto}" alt="Prévia da refeição">`};img.src=reader.result};reader.readAsDataURL(file)
 });
 document.getElementById("foodForm").addEventListener("submit",e=>{
- e.preventDefault();const name=document.getElementById("foodName").value.trim(),grams=Number(document.getElementById("foodGrams").value)||0,k100=document.getElementById("foodKcal100").value===""?null:Number(document.getElementById("foodKcal100").value);const kcal=k100===null?null:k100*grams/100;
- todayMeals().push({type:document.getElementById("mealType").value,name,grams,kcal,photo:selectedMealPhoto||"",createdAt:new Date().toISOString()});save();e.target.reset();document.getElementById("foodGrams").value=100;document.getElementById("foodSearchStatus").textContent="Pesquisa opcional na base Open Food Facts.";document.getElementById("foodSearchResults").innerHTML="";document.getElementById("mealPhotoPreview").innerHTML="";selectedMealPhoto="";updateKcalPreview();renderFood();toast("Refeição registrada. Bom cuidado! ♡")
+ e.preventDefault();const name=document.getElementById("foodName").value.trim(),grams=Number(document.getElementById("foodGrams").value)||0,k100=document.getElementById("foodKcal100").value===""?null:Number(document.getElementById("foodKcal100").value),kcal=k100===null?null:k100*grams/100,date=foodDate();
+ mealsFor(date).push({type:document.getElementById("mealType").value,name,grams,kcal,time:document.getElementById("mealTime").value||"",sugar:document.getElementById("mealSugar").checked,photo:selectedMealPhoto||"",createdAt:new Date().toISOString()});
+ save();e.target.reset();document.getElementById("foodGrams").value=100;document.getElementById("foodEntryDate").value=date;document.getElementById("foodSearchStatus").textContent="Pesquisa opcional na base Open Food Facts.";document.getElementById("foodSearchResults").innerHTML="";document.getElementById("mealPhotoPreview").innerHTML="";selectedMealPhoto="";updateKcalPreview();renderFood();toast("Refeição registrada. Bom cuidado! ♡")
 });
+document.getElementById("foodEntryDate").value=todayKey();document.getElementById("foodEntryDate").addEventListener("change",renderFood);
+document.getElementById("foodCalendarMonth").value=todayKey().slice(0,7);document.getElementById("foodCalendarMonth").addEventListener("change",renderFoodCalendar);
+document.getElementById("foodCalendarPrev").addEventListener("click",()=>{const p=foodMonth().split("-").map(Number),d=new Date(p[0],p[1]-2,1);document.getElementById("foodCalendarMonth").value=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0");renderFoodCalendar()});
+document.getElementById("foodCalendarNext").addEventListener("click",()=>{const p=foodMonth().split("-").map(Number),d=new Date(p[0],p[1],1);document.getElementById("foodCalendarMonth").value=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0");renderFoodCalendar()});
+document.getElementById("saveFoodSchedule").addEventListener("click",()=>{state.foodSchedule={};document.querySelectorAll("#foodScheduleFields input").forEach(input=>state.foodSchedule[input.dataset.meal]=input.value);save();toast("Seus horários habituais foram salvos.")});
 
 document.querySelectorAll("[data-page]").forEach(btn=>btn.addEventListener("click",()=>{const page=btn.dataset.page;document.querySelectorAll(".page").forEach(p=>p.classList.toggle("active",p.id==="page-"+page));document.querySelectorAll(".nav-link[data-page]").forEach(n=>n.classList.toggle("active",n.dataset.page===page));document.getElementById("sidebar").classList.remove("open");window.scrollTo(0,0)}));
 document.getElementById("menuBtn").addEventListener("click",()=>document.getElementById("sidebar").classList.toggle("open"));
