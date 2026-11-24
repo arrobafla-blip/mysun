@@ -36,15 +36,76 @@ function renderMonthlyGoals(){
 }
 function render(){
  const now=new Date();document.getElementById("todayLabel").textContent=now.toLocaleDateString("pt-BR",{weekday:"long",day:"numeric",month:"long"});document.getElementById("longDate").textContent=now.toLocaleDateString("pt-BR",{day:"2-digit",month:"short"});document.getElementById("journalDate").textContent=dateText(todayKey());
- renderToday();renderWater();renderMonthlyGoals();renderChallenge();renderHabits();renderJournal();renderArcana();renderMap();renderFood();renderSpiritual();
+ renderToday();renderOverviewCalendar();renderWater();renderMonthlyGoals();renderChallenge();renderHabits();renderJournal();renderArcana();renderMap();renderFood();renderSpiritual();renderOverviewCalendar();
 }
+
+let overviewMonth=todayKey().slice(0,7),overviewSelectedDate=todayKey();
+function overviewDateLabel(d){return new Date(d+"T12:00:00").toLocaleDateString("pt-BR",{weekday:"long",day:"numeric",month:"long",year:"numeric"})}
+function overviewRecords(date){
+ const meals=state.meals[date]||[],training=(state.trainingSessions||[]).filter(x=>x.date===date),selfcare=(state.selfCareLog||[]).filter(x=>x.date===date),sleep=(state.sleepLogs||[]).find(x=>x.date===date),mood=(state.moods||[]).find(x=>x.date===date),journal=state.journals[date]||{},water=Number(state.water[date]||0),waterGoal=(Number(state.waterGoal)||3)*(Number(state.bottleSize)||600),habits=state.logs[date]||{};
+ return {meals,training,selfcare,sleep,mood,journal,water,waterGoal,habits};
+}
+function renderOverviewCalendar(){
+ const host=document.getElementById("overviewCalendar");if(!host)return;
+ const [year,month]=overviewMonth.split("-").map(Number),first=new Date(year,month-1,1),days=new Date(year,month,0).getDate(),offset=first.getDay();
+ const label=document.getElementById("overviewMonthLabel");label.textContent=first.toLocaleDateString("pt-BR",{month:"long",year:"numeric"});
+ host.innerHTML="";["Dom","Seg","Ter","Qua","Qui","Sex","Sáb"].forEach(d=>{const w=document.createElement("div");w.className="overview-weekday";w.textContent=d;host.appendChild(w)});
+ for(let i=0;i<offset;i++){const blank=document.createElement("div");blank.className="overview-blank";host.appendChild(blank)}
+ for(let day=1;day<=days;day++){
+  const key=year+"-"+String(month).padStart(2,"0")+"-"+String(day).padStart(2,"0"),r=overviewRecords(key),cell=document.createElement("button");cell.type="button";cell.className="overview-day"+(key===overviewSelectedDate?" selected":"")+(key===todayKey()?" today":"");
+  const num=document.createElement("b");num.textContent=day;cell.appendChild(num);
+  const marks=document.createElement("span");marks.className="overview-day-marks";
+  if(r.meals.length)marks.append("●");if(r.training.length)marks.append("◆");if(r.selfcare.length)marks.append("♥");if(r.sleep)marks.append("☾");
+  cell.appendChild(marks);cell.title=[r.meals.length? "Alimentação registrada":"",r.training.length?"Treino registrado":"",r.selfcare.length?"Autocuidado registrado":"",r.sleep?"Sono registrado":""].filter(Boolean).join(" · ")||"Sem registros neste dia";
+  cell.addEventListener("click",()=>{overviewSelectedDate=key;renderOverviewCalendar()});host.appendChild(cell);
+ }
+ renderOverviewDay();
+}
+function overviewMetric(icon,label,value,status,cls=""){
+ const el=document.createElement("div");el.className="overview-metric "+cls;
+ const top=document.createElement("div");top.className="overview-metric-top";const glyph=document.createElement("span");glyph.textContent=icon;const name=document.createElement("small");name.textContent=label;top.append(glyph,name);
+ const strong=document.createElement("b");strong.textContent=value;const note=document.createElement("span");note.className="overview-metric-status";note.textContent=status;el.append(top,strong,note);return el;
+}
+function renderOverviewDay(){
+ const r=overviewRecords(overviewSelectedDate),title=document.getElementById("overviewDayTitle"),status=document.getElementById("overviewDayStatus"),metrics=document.getElementById("overviewDayMetrics"),details=document.getElementById("overviewDayDetails");
+ if(!metrics)return;
+ title.textContent=overviewDateLabel(overviewSelectedDate);
+ const habitTotal=activeHabits().length,habitDone=activeHabits().filter(h=>r.habits[h.id]).length;
+ const waterPct=r.waterGoal?Math.min(100,Math.round(r.water/r.waterGoal*100)):0;
+ const mealStatus=!r.meals.length?"Sem registro":r.meals.length>=3?"Bem registrado":"Registro parcial";
+ const sleepStatus=r.sleep?(r.sleep.quality||"Registrado"):"Sem registro";
+ const moodValue=r.mood?.mood||r.journal.mood||"Não registrado";
+ const allCount=r.meals.length+r.training.length+r.selfcare.length+(r.sleep?1:0)+(r.mood||r.journal.mood?1:0);
+ status.textContent=allCount?"Dia com "+allCount+" tipo(s) de registro":"Nenhum registro neste dia";
+ metrics.innerHTML="";
+ metrics.append(
+  overviewMetric("🥗","Alimentação",r.meals.length+" refeições",mealStatus),
+  overviewMetric("🏃","Movimento",r.training.length?r.training.length+" atividade(s)":"—",r.training.map(x=>x.type).join(", ")||"Sem treino registrado"),
+  overviewMetric("💧","Hidratação",r.water.toLocaleString("pt-BR")+" ml",waterPct+"% da meta"),
+  overviewMetric("♡","Autocuidado",r.selfcare.length+" atividade(s)",r.selfcare.length?"Registrado":"Sem registro"),
+  overviewMetric("☾","Sono",r.sleep?Number(r.sleep.hours).toLocaleString("pt-BR")+" h":"—",sleepStatus),
+  overviewMetric("☀","Humor",moodValue,moodValue==="Não registrado"?"Sem registro":"Check-in registrado"),
+  overviewMetric("✓","Hábitos",habitDone+"/"+habitTotal,habitTotal?(habitDone===habitTotal?"Todos concluídos":"Em andamento"):"Sem hábitos ativos")
+ );
+ details.innerHTML="";
+ const lines=[];
+ if(r.meals.length){const names=r.meals.map(x=>(x.time?x.time+" · ":"")+x.type+": "+x.name);lines.push(["Refeições",names.join(" | ")]);}
+ if(r.training.length)lines.push(["Treinos",r.training.map(x=>x.type+(x.duration?" · "+x.duration+" min":"")).join(" | ")]);
+ if(r.selfcare.length)lines.push(["Autocuidado",r.selfcare.map(x=>{const item=(window.mySunSelfCareNames||[])[x.id];return item||"Atividade realizada"}).join(", ")]);
+ if(r.sleep?.note)lines.push(["Observação do sono",r.sleep.note]);
+ if(r.journal.win)lines.push(["Pequena vitória",r.journal.win]);
+ if(r.journal.gratitude)lines.push(["Gratidão",r.journal.gratitude]);
+ if(!lines.length){details.textContent="Os detalhes das refeições, treinos, autocuidado e diário aparecerão aqui conforme você registrar seu dia.";}
+ else lines.forEach(([k,v])=>{const row=document.createElement("p");const b=document.createElement("b");b.textContent=k+": ";row.append(b,document.createTextNode(v));details.appendChild(row)});
+}
+
 function renderToday(){
  const host=document.getElementById("todayHabits"),l=logFor();host.innerHTML="";
  activeHabits().forEach(h=>{const row=document.createElement("label");row.className="habit-row"+(l[h.id]?" done":"");row.innerHTML=`<input class="habit-check" type="checkbox" ${l[h.id]?"checked":""}><span class="habit-name"></span><span class="category-tag"></span>`;row.querySelector(".habit-name").textContent=h.name;row.querySelector(".category-tag").textContent=h.category;row.querySelector("input").addEventListener("change",e=>toggleHabit(h.id,e.target.checked));host.appendChild(row)});
  document.getElementById("todayCount").textContent=`${completedCount()}/${activeHabits().length}`;
 }
 function toggleHabit(id,checked){const l=logFor();const before=!!l[id];l[id]=checked;if(checked&&!before){state.xp=(state.xp||0)+10;toast("Mais um passo de cuidado. +10 pontos de luz ✧")}if(!checked&&before){state.xp=Math.max(0,(state.xp||0)-10)}save();render();if(isDayDone(todayKey()))toast("Dia completo! Você honrou seus compromissos. ☼")}
-function renderWater(){const ml=state.water[todayKey()]||0;const goal=state.waterGoal||3;const size=state.bottleSize||600;const bottles=ml/size;document.getElementById("waterCount").textContent=bottles.toLocaleString("pt-BR",{maximumFractionDigits:1});document.getElementById("waterGoalLabel").textContent=goal;document.getElementById("waterMl").textContent=ml.toLocaleString("pt-BR");document.getElementById("bottleSizeLabel").textContent=size;document.getElementById("waterLevel").style.height=Math.min(100,ml/(goal*size)*100)+"%"}
+function renderWater(){const ml=state.water[todayKey()]||0;const goal=state.waterGoal||3;const size=state.bottleSize||600;const bottles=ml/size;document.getElementById("waterCount").textContent=bottles.toLocaleString("pt-BR",{maximumFractionDigits:1});document.getElementById("waterGoalLabel").textContent=goal;document.getElementById("waterMl").textContent=ml.toLocaleString("pt-BR");document.getElementById("bottleSizeLabel").textContent=size;document.getElementById("waterLevel").style.height=Math.min(100,ml/(goal*size)*100)+"%";renderOverviewCalendar()}
 function renderChallenge(){
  const done=doneDays(),pct=done/21*100,started=!!state.challengeStart;document.getElementById("completedDays").textContent=done;document.getElementById("challengeProgress").style.width=pct+"%";document.getElementById("challengeStatus").textContent=started?"Em andamento":"Ainda não iniciada";document.getElementById("challengeMessage").textContent=done===21?"Você concluiu seu ciclo. Celebre sua caminhada!":started?"Cada dia é uma nova oportunidade.":"Toda transformação começa com uma escolha.";
  document.getElementById("challengeHeadline").textContent=done===21?"Você chegou ao fim desta etapa!":started?"Sua jornada está em movimento.":"Tudo começa com uma intenção.";document.getElementById("challengeSub").textContent=started?`Iniciado em ${dateText(state.challengeStart)} · ${done} dias completos.`:"Inicie seu ciclo quando estiver pronta.";document.getElementById("startChallenge").textContent=started?"Recomeçar um novo ciclo":"Iniciar meu desafio";document.getElementById("challengeCounter").textContent=`${done} de 21 completos`;
@@ -129,7 +190,7 @@ document.getElementById("mealPhoto").addEventListener("change",e=>{
 });
 document.getElementById("foodForm").addEventListener("submit",e=>{
  e.preventDefault();const name=document.getElementById("foodName").value.trim(),grams=Number(document.getElementById("foodGrams").value)||0,date=foodDate();const per100=id=>document.getElementById(id).value===""?null:Number(document.getElementById(id).value);const portion=v=>v===null?null:v*grams/100;const kcal=portion(per100("foodKcal100"));mealsFor(date).push({type:document.getElementById("mealType").value,name,grams,kcal,protein:portion(per100("foodProtein100")),carbs:portion(per100("foodCarbs100")),fat:portion(per100("foodFat100")),time:document.getElementById("mealTime").value||"",sugar:document.getElementById("mealSugar").checked,photo:selectedMealPhoto||"",createdAt:new Date().toISOString()});
- save();e.target.reset();document.getElementById("foodGrams").value=100;document.getElementById("foodEntryDate").value=date;document.getElementById("foodSearchStatus").textContent="Pesquisa opcional na base Open Food Facts.";document.getElementById("foodSearchResults").innerHTML="";document.getElementById("mealPhotoPreview").innerHTML="";selectedMealPhoto="";updateKcalPreview();renderFood();toast("Refeição registrada. Bom cuidado! ♡")
+ save();e.target.reset();document.getElementById("foodGrams").value=100;document.getElementById("foodEntryDate").value=date;document.getElementById("foodSearchStatus").textContent="Pesquisa opcional na base Open Food Facts.";document.getElementById("foodSearchResults").innerHTML="";document.getElementById("mealPhotoPreview").innerHTML="";selectedMealPhoto="";updateKcalPreview();renderFood();renderOverviewCalendar();toast("Refeição registrada. Bom cuidado! ♡")
 });
 document.getElementById("foodEntryDate").value=todayKey();document.getElementById("foodEntryDate").addEventListener("change",()=>{document.getElementById("foodCalendarMonth").value=foodDate().slice(0,7);renderFood()});
 document.getElementById("foodCalendarMonth").value=todayKey().slice(0,7);document.getElementById("foodCalendarMonth").addEventListener("change",renderFoodCalendar);
@@ -140,11 +201,14 @@ document.getElementById("saveFoodSchedule").addEventListener("click",()=>{state.
 document.querySelectorAll("[data-page]").forEach(btn=>btn.addEventListener("click",()=>{const page=btn.dataset.page;document.querySelectorAll(".page").forEach(p=>p.classList.toggle("active",p.id==="page-"+page));document.querySelectorAll(".nav-link[data-page]").forEach(n=>n.classList.toggle("active",n.dataset.page===page));document.getElementById("sidebar").classList.remove("open");window.scrollTo(0,0)}));
 document.getElementById("menuBtn").addEventListener("click",()=>document.getElementById("sidebar").classList.toggle("open"));
 document.getElementById("waterPlus").addEventListener("click",()=>{state.water[todayKey()]=(state.water[todayKey()]||0)+(state.bottleSize||600);save();renderWater();toast("Garrafa registrada. Um gesto de cuidado 💧")});
-document.getElementById("waterMinus").addEventListener("click",()=>{state.water[todayKey()]=Math.max(0,(state.water[todayKey()]||0)-(state.bottleSize||600));save();renderWater()});
-document.getElementById("waterGoalBtn").addEventListener("click",()=>{const goal=prompt("Quantas garrafas você quer beber por dia?",state.waterGoal||3);if(goal===null)return;if(!(Number(goal)>0&&Number(goal)<=20)){alert("Informe uma meta entre 1 e 20 garrafas.");return}const size=prompt("Qual é a capacidade da sua garrafa em ml?",state.bottleSize||600);if(size===null)return;if(!(Number(size)>0&&Number(size)<=3000)){alert("Informe uma capacidade válida em ml.");return}state.waterGoal=Number(goal);state.bottleSize=Number(size);save();renderWater();toast("Sua meta de hidratação foi atualizada.")});
+document.getElementById("waterMinus").addEventListener("click",()=>{state.water[todayKey()]=Math.max(0,(state.water[todayKey()]||0)-(state.bottleSize||600));save();renderWater();renderOverviewCalendar()});
+document.getElementById("waterGoalBtn").addEventListener("click",()=>{const goal=prompt("Quantas garrafas você quer beber por dia?",state.waterGoal||3);if(goal===null)return;if(!(Number(goal)>0&&Number(goal)<=20)){alert("Informe uma meta entre 1 e 20 garrafas.");return}const size=prompt("Qual é a capacidade da sua garrafa em ml?",state.bottleSize||600);if(size===null)return;if(!(Number(size)>0&&Number(size)<=3000)){alert("Informe uma capacidade válida em ml.");return}state.waterGoal=Number(goal);state.bottleSize=Number(size);save();renderWater();renderOverviewCalendar();toast("Sua meta de hidratação foi atualizada.")});
 document.getElementById("startChallenge").addEventListener("click",()=>{if(state.challengeStart&&!confirm("Começar um novo ciclo de 21 dias? Seu histórico anterior continuará salvo, mas o novo desafio começa do zero."))return;state.challengeStart=todayKey();save();render();toast("Sua nova jornada começou. Que floresça! ☼")});
 document.getElementById("addHabitForm").addEventListener("submit",e=>{e.preventDefault();const input=document.getElementById("newHabit"),name=input.value.trim();if(!name)return;state.habits.push({id:"h"+Date.now(),name,category:document.getElementById("newCategory").value});input.value="";save();render();toast("Novo hábito adicionado ✧")});
-document.getElementById("saveJournal").addEventListener("click",()=>{state.journals[todayKey()]={mood:mood.value,win:win.value.trim(),tomorrow:tomorrow.value.trim(),gratitude:gratitude.value.trim()};save();renderJournal();document.getElementById("journalStatus").textContent="Reflexão salva com carinho.";setTimeout(()=>document.getElementById("journalStatus").textContent="",2600)});
+document.getElementById("saveJournal").addEventListener("click",()=>{state.journals[todayKey()]={mood:mood.value,win:win.value.trim(),tomorrow:tomorrow.value.trim(),gratitude:gratitude.value.trim()};save();renderJournal();renderOverviewCalendar();document.getElementById("journalStatus").textContent="Reflexão salva com carinho.";setTimeout(()=>document.getElementById("journalStatus").textContent="",2600)});
 document.getElementById("backupBtn").addEventListener("click",()=>{const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download="my-sun-backup-"+todayKey()+".json";a.click();URL.revokeObjectURL(url);toast("Backup preparado para salvar.")});
 document.getElementById("importFile").addEventListener("change",async e=>{const file=e.target.files[0];if(!file)return;try{const data=JSON.parse(await file.text());if(!data.habits||!data.logs)throw Error();if(confirm("Importar este backup? Os dados atuais deste navegador serão substituídos.")){state={...fresh(),...data};save();render();window.dispatchEvent(new Event("mySunStateUpdated"));toast("Backup importado com sucesso.")}}catch(err){alert("Não foi possível importar. Confira se o arquivo é um backup do my sun.")}e.target.value=""});
+
+document.getElementById("overviewPrev").addEventListener("click",()=>{const [y,m]=overviewMonth.split("-").map(Number),d=new Date(y,m-2,1);overviewMonth=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0");renderOverviewCalendar()});
+document.getElementById("overviewNext").addEventListener("click",()=>{const [y,m]=overviewMonth.split("-").map(Number),d=new Date(y,m,1);overviewMonth=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0");renderOverviewCalendar()});
 render();
