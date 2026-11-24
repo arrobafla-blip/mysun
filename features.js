@@ -1,6 +1,6 @@
 /* Novas áreas do my sun: mantém o armazenamento mySun.v1 e os registros antigos. */
 (function(){
-  ["dreams","evolution","capsules","moods","ritualHistory","glowGoals","transactions","financeGoals","lifeItems","selfCareLog","trainingSessions"].forEach(k=>{if(!Array.isArray(state[k]))state[k]=[]});if(!state.monthlyBudgets||typeof state.monthlyBudgets!=="object")state.monthlyBudgets={};
+  ["dreams","evolution","capsules","moods","ritualHistory","glowGoals","transactions","financeGoals","lifeItems","selfCareLog","trainingSessions","sleepLogs"].forEach(k=>{if(!Array.isArray(state[k]))state[k]=[]});if(!state.monthlyBudgets||typeof state.monthlyBudgets!=="object")state.monthlyBudgets={};
   const $=id=>document.getElementById(id),today=todayKey();
   const txt=(p,t,c,v)=>{const e=document.createElement(t);if(c)e.className=c;e.textContent=String(v??"");p.appendChild(e);return e};
   const date=d=>d?new Date(d+"T12:00:00").toLocaleDateString("pt-BR"):"Sem data";
@@ -49,6 +49,56 @@
    const avg=lengths.length?Math.round(lengths.reduce((x,y)=>x+y,0)/lengths.length):28;
    return {starts,lengths,avg,confidence:lengths.length>=2?"Estimativa baseada em pelo menos 3 inícios registrados.":lengths.length===1?"Estimativa inicial: há apenas um intervalo registrado.":"Estimativa inicial padrão de 28 dias; registre novos ciclos para personalizar."};
   }
+  function cyclePhaseForDate(dateValue,stats){
+    const starts=stats.starts.filter(d=>d<=dateValue);if(!starts.length)return null;
+    const start=starts[starts.length-1],idx=stats.starts.indexOf(start),next=stats.starts[idx+1];
+    const length=next?Math.round((cycleDate(next)-cycleDate(start))/86400000):stats.avg;
+    const day=Math.floor((cycleDate(dateValue)-cycleDate(start))/86400000)+1;
+    if(day<1||day>length)return null;
+    const entry=state.cycleStarts.find(x=>x.date===start),bleed=Number(entry?.bleedLength)||5,ovDay=Math.max(10,length-14);
+    return day<=bleed?"menstrual":day<ovDay-2?"follicular":day<=ovDay+2?"ovulatory":"luteal";
+  }
+  const phaseLabels={menstrual:"Menstrual",follicular:"Folicular",ovulatory:"Ovulatória (estimada)",luteal:"Lútea (estimada)"};
+  const moodLabels={radiante:"Radiante",bem:"Bem / tranquila",neutra:"Neutra",cansada:"Cansada",ansiosa:"Ansiosa",triste:"Triste / sensível",irritada:"Irritada"};
+  function renderCyclePatterns(){
+    const host=$("cyclePatterns");if(!host)return;host.innerHTML="";
+    const stats=cycleStats(),days={};
+    const ensure=d=>{if(d&&!days[d])days[d]={date:d,food:false,training:[],sleep:null,mood:""};return days[d]};
+    Object.keys(state.meals||{}).forEach(d=>{if((state.meals[d]||[]).length){const x=ensure(d);x.food=true;x.kcal=(state.meals[d]||[]).reduce((sum,m)=>sum+(Number(m.kcal)||0),0)}});
+    state.trainingSessions.forEach(x=>{if(x.date)ensure(x.date).training.push(x)});
+    state.sleepLogs.forEach(x=>{if(x.date)ensure(x.date).sleep=x});
+    state.moods.forEach(x=>{if(x.date)ensure(x.date).mood=x.mood});
+    Object.entries(state.journals||{}).forEach(([d,x])=>{if(x?.mood&&!days[d]?.mood)ensure(d).mood=x.mood});
+    const grouped={menstrual:[],follicular:[],ovulatory:[],luteal:[]};
+    Object.values(days).forEach(x=>{const phase=cyclePhaseForDate(x.date,stats);if(phase)grouped[phase].push(x)});
+    const phaseOrder=["menstrual","follicular","ovulatory","luteal"];
+    phaseOrder.forEach(phase=>{
+      const records=grouped[phase],card=document.createElement("article");card.className="card cycle-pattern-card";
+      txt(card,"p","eyebrow","PADRÕES REGISTRADOS");
+      txt(card,"h3","",phaseLabels[phase]);
+      txt(card,"small","cycle-pattern-count",records.length+" dias com registros associados");
+      const sleep=records.filter(x=>x.sleep),food=records.filter(x=>x.food),mood=records.filter(x=>x.mood),training=records.filter(x=>x.training.length);
+      const lines=[];
+      if(sleep.length>=3){const avg=sleep.reduce((s,x)=>s+Number(x.sleep.hours||0),0)/sleep.length;lines.push("Sono: média de "+avg.toFixed(1).replace(".",",")+" h em "+sleep.length+" registros.")}
+      else lines.push("Sono: "+sleep.length+" registro(s); são necessários pelo menos 3 para estimar uma média.");
+      if(food.length>=3){const avg=food.reduce((s,x)=>s+(Number(x.kcal)||0),0)/food.length;lines.push("Alimentação: média de "+Math.round(avg)+" kcal nos "+food.length+" dias com refeições registradas.")}
+      else lines.push("Alimentação: "+food.length+" dia(s) com refeições; ainda há poucos registros para comparar.");
+      const sessions=records.reduce((s,x)=>s+x.training.length,0);
+      if(records.length>=3)lines.push("Movimento: "+sessions+" sessão(ões) em "+training.length+" dos "+records.length+" dias registrados.");
+      else lines.push("Movimento: "+sessions+" sessão(ões) registradas; continue anotando para observar frequência.");
+      if(mood.length>=3){const counts={};mood.forEach(x=>counts[x.mood]=(counts[x.mood]||0)+1);const top=Object.entries(counts).sort((a,b)=>b[1]-a[1])[0];lines.push("Humor: mais frequente foi "+(moodLabels[top[0]]||top[0])+" ("+top[1]+" de "+mood.length+" registros).")}
+      else lines.push("Humor: "+mood.length+" registro(s); faltam dados para identificar uma tendência.");
+      const ul=document.createElement("ul");lines.forEach(line=>txt(ul,"li","",line));card.appendChild(ul);
+      host.appendChild(card);
+    });
+    if(!stats.starts.length){const note=document.createElement("p");note.className="muted small";note.textContent="Registre o início da menstruação para relacionar seus dados às fases estimadas.";host.prepend(note)}
+  }
+  function renderCycleSleepHistory(){
+    const host=$("cycleSleepHistory");if(!host)return;host.innerHTML="";
+    const items=state.sleepLogs.slice().sort((a,b)=>b.date.localeCompare(a.date)).slice(0,12);
+    if(!items.length){empty(host,"Seus registros de sono aparecerão aqui.");return}
+    items.forEach(x=>{const row=document.createElement("div");row.className="cycle-history-row";const info=document.createElement("div");txt(info,"strong","",date(x.date));txt(info,"small","",Number(x.hours).toLocaleString("pt-BR")+" h · "+(x.quality||"qualidade não informada")+(x.note?" · "+x.note:""));row.appendChild(info);const del=txt(row,"button","delete-feature","Excluir");del.onclick=()=>{if(confirm("Excluir este registro de sono?")){state.sleepLogs=state.sleepLogs.filter(y=>y.date!==x.date);save();renderCyclePatterns();renderCycleSleepHistory()}};host.appendChild(row)})
+  }
   function renderCycle(){
    const s=cycleStats(),today=todayKey(),last=s.starts[s.starts.length-1],next=last?new Date(cycleDate(last).getTime()+s.avg*86400000):null;
    $("cycleCount").textContent=s.lengths.length+" intervalos";$("cycleAverage").textContent=s.lengths.length?s.avg+" dias":"Ainda não calculada";
@@ -60,10 +110,13 @@
     $("cyclePhaseSymbol").textContent=info.symbol;$("cyclePhaseName").textContent=info.name;$("cyclePhaseDay").textContent="Dia estimado "+cycleDay+" do ciclo de "+s.avg+" dias. "+info.desc;
     $("cycleNextPrediction").textContent="Próximo início estimado: "+cycleFmt(next.toISOString().slice(0,10));
    }else{$("cyclePhaseSymbol").textContent="☾";$("cyclePhaseName").textContent="Registre sua menstruação";$("cyclePhaseDay").textContent="Para começar a estimar seu ciclo, informe o primeiro dia da última menstruação.";$("cycleNextPrediction").textContent="Sua previsão aparecerá aqui."}
+   renderCyclePatterns();renderCycleSleepHistory();
    $("cycleHistoryCount").textContent=s.starts.length+" registros";const host=$("cycleHistory");host.innerHTML="";
    if(!s.starts.length){empty(host,"Seus registros aparecerão aqui. Você pode adicionar datas anteriores para calcular sua média.");return}
    s.starts.slice().reverse().forEach(d=>{const row=document.createElement("div");row.className="cycle-history-row";txt(row,"strong","",cycleFmt(d));const del=txt(row,"button","delete-feature","Excluir");del.onclick=()=>{if(confirm("Excluir este início de ciclo?")){state.cycleStarts=state.cycleStarts.filter(x=>x.date!==d);save();renderCycle()}};host.appendChild(row)})
   }
+  $("sleepDate").value=todayKey();$("sleepDate").max=todayKey();
+  $("sleepForm").addEventListener("submit",e=>{e.preventDefault();const d=$("sleepDate").value,hours=Number($("sleepHours").value);if(!d||!Number.isFinite(hours)||hours<=0||hours>24){alert("Informe uma data e uma duração de sono válida.");return}state.sleepLogs=state.sleepLogs.filter(x=>x.date!==d);state.sleepLogs.push({date:d,hours,quality:$("sleepQuality").value,note:$("sleepNote").value.trim()});save();e.target.reset();$("sleepDate").value=todayKey();renderCyclePatterns();renderCycleSleepHistory();toast("Registro de sono salvo. ♡")});
   $("cycleStartDate").value=todayKey();$("cycleStartDate").max=todayKey();
   $("cycleForm").addEventListener("submit",e=>{e.preventDefault();const d=$("cycleStartDate").value;if(!d){alert("Escolha a data de início.");return}if(state.cycleStarts.some(x=>x.date===d)){alert("Essa data já está registrada.");return}state.cycleStarts.push({date:d,notes:$("cycleNotes").value.trim(),bleedLength:Number($("cycleBleedLength").value)||5});save();$("cycleNotes").value="";renderCycle();toast("Início do ciclo registrado. ♡")});
 
@@ -78,7 +131,7 @@
   $("glowForm").addEventListener("submit",async e=>{e.preventDefault();try{const p=await photo($("glowPhoto").files[0]);state.glowGoals.push({id:Date.now(),title:$("glowTitle").value.trim(),category:$("glowCategory").value,target:$("glowTarget").value.trim(),date:$("glowDate").value,photo:p,done:false});save();e.target.reset();renderGlow();toast("Meta adicionada ao seu glow up ♡")}catch(x){alert(x.message)}});
   $("financeForm").addEventListener("submit",e=>{e.preventDefault();const amount=cents($("financeAmount").value);if(amount<=0){alert("Informe um valor maior que zero.");return}state.transactions.push({id:Date.now(),type:$("financeType").value,date:$("financeDate").value,title:$("financeTitle").value.trim(),amountCents:amount,category:$("financeCategory").value,account:$("financeAccount").value.trim(),card:$("financeCard").value.trim()});save();e.target.reset();$("financeDate").value=todayKey();renderFinance();toast("Lançamento financeiro salvo.")});
   $("financeGoalForm").addEventListener("submit",e=>{e.preventDefault();const target=cents($("financeGoalTarget").value),current=cents($("financeGoalCurrent").value);if(target<=0){alert("Informe uma meta válida.");return}state.financeGoals.push({id:Date.now(),title:$("financeGoalTitle").value.trim(),target,current});save();e.target.reset();$("financeGoalCurrent").value="0";renderFinance()});
-  $("financeMonth").addEventListener("change",renderFinance);$("financeBudgetForm").addEventListener("submit",e=>{e.preventDefault();const value=cents($("financeBudgetInput").value);if(value<0){alert("Informe um orçamento válido.");return}state.monthlyBudgets[$("financeMonth").value||todayKey().slice(0,7)]=value;save();renderFinance();toast("Orçamento mensal atualizado.")});window.addEventListener("mySunStateUpdated",()=>{["dreams","evolution","capsules","moods","ritualHistory","glowGoals","transactions","financeGoals","lifeItems","selfCareLog","trainingSessions"].forEach(k=>{if(!Array.isArray(state[k]))state[k]=[]});if(!state.monthlyBudgets)state.monthlyBudgets={};renderAll()});
+  $("financeMonth").addEventListener("change",renderFinance);$("financeBudgetForm").addEventListener("submit",e=>{e.preventDefault();const value=cents($("financeBudgetInput").value);if(value<0){alert("Informe um orçamento válido.");return}state.monthlyBudgets[$("financeMonth").value||todayKey().slice(0,7)]=value;save();renderFinance();toast("Orçamento mensal atualizado.")});window.addEventListener("mySunStateUpdated",()=>{["dreams","evolution","capsules","moods","ritualHistory","glowGoals","transactions","financeGoals","lifeItems","selfCareLog","trainingSessions","sleepLogs"].forEach(k=>{if(!Array.isArray(state[k]))state[k]=[]});if(!state.monthlyBudgets)state.monthlyBudgets={};renderAll()});
   $("lifeForm").addEventListener("submit",e=>{e.preventDefault();state.lifeItems.push({id:Date.now(),title:$("lifeTitle").value.trim(),category:$("lifeCategory").value,date:$("lifeDate").value,done:false});save();e.target.reset();renderLife();toast("Adicionado à sua Life List ☼")});
   document.addEventListener("click",e=>{const b=e.target.closest("[data-page]");if(!b)return;const p=b.dataset.page;if(!$("page-"+p))return;document.querySelectorAll(".page").forEach(x=>x.classList.toggle("active",x.id==="page-"+p));document.querySelectorAll(".nav-link[data-page]").forEach(x=>x.classList.toggle("active",x.dataset.page===p));$("sidebar").classList.remove("open");window.scrollTo(0,0)});
   renderAll();
