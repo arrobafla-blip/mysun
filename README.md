@@ -1,44 +1,29 @@
 # my sun ☼
 
-Diário gratuito de evolução pessoal, com desafio de 21 dias, hábitos, hidratação, diário e coleção inspirada nos 22 Arcanos Maiores.
+Diário gratuito de evolução pessoal, autocuidado, organização e planejamento de vida.
 
-## Como publicar gratuitamente no GitHub Pages
+## Funcionalidades
+- Visão geral, desafio de 21 dias, hábitos e hidratação ajustável.
+- Diário pessoal, mood tracker e diário de evolução.
+- Coleção dos 22 Arcanos Maiores.
+- Alimentação com fotos, estimativas de calorias e busca Open Food Facts.
+- Espiritualidade, calendário lunar, rituais e intenções de Ano Novo.
+- Universo de sonhos com mural de imagens.
+- Cápsula do tempo com mensagens e fotos que abrem na data escolhida.
+- Central de rituais e histórico de práticas.
+- Glow up tracker com metas e fotos de acompanhamento.
+- Vida financeira com receitas, despesas, categorias, contas, cartões, gráficos mensais e metas.
+- Life List com experiências e atividades concluídas.
+- Menu de autocuidado com 30 ideias e três meditações guiadas em texto.
+- Exportação e importação de backup JSON.
 
-1. Crie uma conta em https://github.com, caso ainda não tenha.
-2. Crie um repositório novo chamado `my-sun`.
-3. Envie os arquivos `index.html`, `style.css` e `app.js` para a raiz do repositório.
-4. No repositório, entre em **Settings → Pages**.
-5. Em **Build and deployment**, escolha **Deploy from a branch**.
-6. Selecione a branch `main` e a pasta `/ (root)`, depois clique em **Save**.
-7. Aguarde alguns minutos. O endereço será parecido com `https://SEU-USUARIO.github.io/my-sun/`.
+## Armazenamento e privacidade
+Esta versão ainda não possui login nem sincronização em nuvem. Todos os registros são salvos no armazenamento local do navegador, neste dispositivo e navegador. Fotos são redimensionadas antes de serem guardadas, mas ainda consomem espaço do navegador. Faça backups regulares usando o botão do site.
 
-## O que já funciona
+O backup inclui os novos registros e os dados antigos. Importar um backup substitui os dados locais atuais após confirmação. Guarde o arquivo exportado em local seguro.
 
-- Painel inicial e navegação responsiva.
-- Desafio de 21 dias com calendário.
-- Checklist diário de hábitos editáveis.
-- Controle de hidratação por garrafas (capacidade ajustável, padrão de 600 ml).
-- Diário com humor, vitórias, intenção para amanhã e gratidão.
-- Página de alimentação com diário de refeições, estimativa de calorias e fotos.
-- Página de espiritualidade com calendário lunar, rituais simbólicos, autoconhecimento e edição especial de Ano Novo.
-- Pontos de experiência e desbloqueio progressivo dos 22 Arcanos.
-- Exportação e importação de backup em JSON.
-- Salvamento automático no armazenamento local do navegador.
+## Publicação
+O projeto usa HTML, CSS e JavaScript sem dependências de build. Publique os arquivos da raiz do repositório pelo GitHub Pages. Os arquivos index.html, style.css, app.js e features.js precisam permanecer juntos.
 
-## Importante sobre seus dados
-
-Esta versão não tem login nem sincronização em nuvem. Os dados ficam no navegador e dispositivo em que você usa o site. Faça backups regularmente e importe o arquivo de backup se trocar de navegador ou computador. Para publicar atualizações do site, substitua os arquivos no GitHub.
-
-## Personalização
-
-Os hábitos iniciais são exemplos editáveis. O desafio conta um dia como concluído quando todos os hábitos ativos daquele dia estiverem marcados. Dias incompletos permanecem no histórico e não apagam o progresso já feito.
-
-
-## Página Espiritualidade & Autoconhecimento
-A versão inclui calendário das próximas fases lunares (datas e horários de Brasília a partir de 24/11/2026), sugestões simbólicas por fase, rituais de limpeza, prosperidade e autoestima, além de um espaço de reflexão salvo no navegador. Os rituais são práticas de intenção e autocuidado, sem promessa de resultados sobrenaturais.
-
-## Importante sobre os registros
-Os dados são armazenados no navegador (localStorage) e não sincronizam automaticamente entre aparelhos. Faça backup pelo botão do próprio site antes de substituir arquivos ou trocar de navegador.
-
-
-Os registros de alimentação, fotos, hidratação e reflexões ficam no armazenamento local do navegador. Faça backups regulares. As fotos não são analisadas automaticamente para reconhecer alimentos; as calorias são pesquisadas em base pública ou preenchidas manualmente. Rituais são práticas simbólicas, sem promessa de resultados.
+## Observações
+A área financeira é um organizador manual; não se conecta a bancos ou cartões. As meditações são roteiros de atenção plena para leitura, sem áudio. As práticas de ritual são simbólicas e não prometem resultados sobrenaturais. A integração de login, nuvem e armazenamento privado será feita em uma etapa futura.

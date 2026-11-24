@@ -25,6 +25,17 @@
         <button class="nav-link" data-page="arcana"><span>✴</span> Minha coleção</button>
         <button class="nav-link" data-page="food"><span>♧</span> Alimentação</button>
         <button class="nav-link" data-page="spiritual"><span>☾</span> Espiritualidade</button>
+
+        <div class="side-label extra-label">SEU FLORESCIMENTO</div>
+        <button class="nav-link" data-page="dreams"><span>✧</span> Universo de sonhos</button>
+        <button class="nav-link" data-page="evolution"><span>✿</span> Diário de evolução</button>
+        <button class="nav-link" data-page="capsule"><span>⌛</span> Cápsula do tempo</button>
+        <button class="nav-link" data-page="mood"><span>☁</span> Mood tracker</button>
+        <button class="nav-link" data-page="rituals"><span>🕯</span> Central de rituais</button>
+        <button class="nav-link" data-page="glowup"><span>♡</span> Glow up tracker</button>
+        <button class="nav-link" data-page="finance"><span>＄</span> Vida financeira</button>
+        <button class="nav-link" data-page="lifelist"><span>☼</span> Life List</button>
+        <button class="nav-link" data-page="selfcare"><span>🌷</span> Autocuidado & meditações</button>
       </nav>
       <div class="sidebar-bottom">
         <div class="moon-card"><span class="moon-icon">☾</span><div><b>Um dia de cada vez.</b><small>Seu ritmo também é progresso.</small></div></div>
@@ -170,10 +181,81 @@
         <p class="note">Os rituais desta página são práticas simbólicas de intenção e autocuidado. Não substituem ações concretas nem garantem prosperidade, beleza ou qualquer resultado. Evite ingerir misturas, aplicar ingredientes desconhecidos na pele ou usar fogo sem supervisão.</p>
       </section>
 
+
+      <section class="page" id="page-dreams">
+        <div class="page-intro"><p class="eyebrow">VISUALIZE, PLANEJE, CULTIVE</p><h1>Meu universo <em>de sonhos</em></h1><p class="muted">Um mural particular para guardar desejos, referências e os passos que aproximam você da vida que imagina.</p></div>
+        <article class="card feature-form-card"><p class="eyebrow">NOVO SONHO</p><form id="dreamForm" class="feature-form">
+          <label>O que você deseja realizar?<input id="dreamTitle" maxlength="90" required placeholder="Ex.: conhecer um lugar especial"></label>
+          <div class="feature-form-grid"><label>Área<select id="dreamArea"><option>Viagens</option><option>Casa</option><option>Carreira</option><option>Família</option><option>Saúde e bem-estar</option><option>Aprendizado</option><option>Experiências</option><option>Outros</option></select></label><label>Quando gostaria?<input id="dreamDate" type="date"></label></div>
+          <label>Por que esse sonho importa?<textarea id="dreamNote" rows="3" placeholder="Escreva o que esse desejo representa para você..."></textarea></label>
+          <label class="feature-upload">Imagem de inspiração<input id="dreamPhoto" type="file" accept="image/*"></label><button class="primary-btn">Guardar no meu universo</button>
+        </form></article>
+        <div class="section-heading"><div><p class="eyebrow">O QUE VOCÊ QUER CULTIVAR</p><h2>Meu mural de sonhos</h2></div><span class="pill" id="dreamCount">0 sonhos</span></div><div class="feature-card-grid" id="dreamList"></div>
+      </section>
+      <section class="page" id="page-evolution">
+        <div class="page-intro"><p class="eyebrow">OLHE PARA O CAMINHO PERCORRIDO</p><h1>Diário de <em>evolução</em></h1><p class="muted">Mais do que metas cumpridas: registre aprendizados, limites respeitados e pequenas mudanças que merecem ser vistas.</p></div>
+        <article class="card feature-form-card"><p class="eyebrow">REGISTRO DE EVOLUÇÃO</p><form id="evolutionForm" class="feature-form">
+          <label>Data<input id="evolutionDate" type="date" required></label><label>O que aprendi sobre mim?<textarea id="evolutionLearn" rows="3"></textarea></label><label>Do que me orgulho?<textarea id="evolutionProud" rows="3"></textarea></label><label>O que quero continuar praticando?<textarea id="evolutionNext" rows="2"></textarea></label>
+          <button class="primary-btn">Salvar no diário</button><span class="save-status" id="evolutionStatus"></span>
+        </form></article><div class="section-heading"><div><p class="eyebrow">SUA HISTÓRIA EM MOVIMENTO</p><h2>Registros anteriores</h2></div></div><div class="history-list" id="evolutionList"></div>
+      </section>
+      <section class="page" id="page-capsule">
+        <div class="page-intro"><p class="eyebrow">UMA MENSAGEM PARA O FUTURO</p><h1>Cápsula <em>do tempo</em></h1><p class="muted">Escreva para a sua versão do futuro. A cápsula fica fechada até a data que você escolher.</p></div>
+        <article class="card feature-form-card"><p class="eyebrow">CRIAR UMA CÁPSULA</p><form id="capsuleForm" class="feature-form"><label>Título da mensagem<input id="capsuleTitle" maxlength="90" required></label><label>Data para abrir<input id="capsuleDate" type="date" required></label><label>Sua mensagem<textarea id="capsuleMessage" rows="5" required></textarea></label><label class="feature-upload">Uma foto para guardar (opcional)<input id="capsulePhoto" type="file" accept="image/*"></label><button class="primary-btn">Selar minha cápsula</button></form></article>
+        <div class="section-heading"><div><p class="eyebrow">PALAVRAS QUE VÃO TE ENCONTRAR</p><h2>Minhas cápsulas</h2></div><span class="pill" id="capsuleCount">0 cápsulas</span></div><div class="feature-card-grid" id="capsuleList"></div>
+      </section>
+      <section class="page" id="page-mood">
+        <div class="page-intro"><p class="eyebrow">NENHUM SENTIMENTO PRECISA SER ESCONDIDO</p><h1>Mood <em>tracker</em></h1><p class="muted">Observe seu humor sem julgamento. Um registro não define seu dia inteiro.</p></div>
+        <article class="card feature-form-card"><p class="eyebrow">CHECK-IN DE HOJE</p><form id="moodForm" class="feature-form"><label>Como está seu humor agora?<select id="moodChoice" required><option value="">Escolha uma opção</option><option value="radiante">☀️ Radiante</option><option value="bem">🌷 Bem / tranquila</option><option value="neutra">☁️ Neutra</option><option value="cansada">🌙 Cansada</option><option value="ansiosa">🫧 Ansiosa</option><option value="triste">🌧️ Triste / sensível</option><option value="irritada">🌩️ Irritada</option></select></label><label>O que pode estar influenciando esse sentimento?<textarea id="moodNote" rows="3"></textarea></label><button class="primary-btn">Registrar meu humor</button><span class="save-status" id="moodStatus"></span></form></article>
+        <div class="section-heading"><div><p class="eyebrow">SEUS ÚLTIMOS REGISTROS</p><h2>Como tenho me sentido</h2></div></div><div class="mood-history" id="moodHistory"></div>
+      </section>
+      <section class="page" id="page-rituals">
+        <div class="page-intro"><p class="eyebrow">PEQUENOS GESTOS, GRANDES SIGNIFICADOS</p><h1>Central de <em>rituais</em></h1><p class="muted">Práticas simples para marcar recomeços, cuidar da casa, do corpo e da mente.</p></div>
+        <div class="ritual-grid" id="ritualHub">
+          <article class="card ritual-card"><span>🏡</span><p class="eyebrow">CASA</p><h3>Renovar o ambiente</h3><p>Abra as janelas, organize uma superfície e retire o que não precisa mais. Finalize com uma música que traga sensação de recomeço.</p><button class="secondary-btn ritual-done" data-ritual="casa">Marcar como realizado</button></article>
+          <article class="card ritual-card"><span>🛁</span><p class="eyebrow">CORPO</p><h3>Banho de presença</h3><p>Tome um banho confortável sem pressa. Perceba a água, respire e finalize com seu hidratante habitual.</p><button class="secondary-btn ritual-done" data-ritual="corpo">Marcar como realizado</button></article>
+          <article class="card ritual-card"><span>📝</span><p class="eyebrow">MENTE</p><h3>Descarregar pensamentos</h3><p>Durante cinco minutos, escreva tudo o que ocupa sua cabeça. Depois, escolha uma coisa que pode ser resolvida hoje.</p><button class="secondary-btn ritual-done" data-ritual="mente">Marcar como realizado</button></article>
+          <article class="card ritual-card"><span>🌿</span><p class="eyebrow">PROSPERIDADE</p><h3>Intenção + ação</h3><p>Escreva uma intenção financeira ou profissional e escolha uma atitude concreta para dar um passo em direção a ela.</p><button class="secondary-btn ritual-done" data-ritual="prosperidade">Marcar como realizado</button></article>
+          <article class="card ritual-card"><span>🌙</span><p class="eyebrow">ENCERRAMENTO</p><h3>Fechar o dia com carinho</h3><p>Reconheça algo que conseguiu fazer, solte o que não coube hoje e escolha uma prioridade gentil para amanhã.</p><button class="secondary-btn ritual-done" data-ritual="encerramento">Marcar como realizado</button></article>
+          <article class="card ritual-card"><span>✨</span><p class="eyebrow">INTENÇÃO</p><h3>Um desejo, um primeiro passo</h3><p>Visualize algo que deseja cultivar e anote uma ação pequena e possível para esta semana.</p><button class="secondary-btn ritual-done" data-ritual="intencao">Marcar como realizado</button></article>
+        </div><div class="section-heading"><div><p class="eyebrow">SUA CONSTÂNCIA</p><h2>Rituais realizados</h2></div></div><div class="history-list" id="ritualHistory"></div>
+        <p class="note">Rituais são práticas simbólicas e de autocuidado; não garantem resultados sobrenaturais. Evite misturas desconhecidas, ingestão de ervas ou uso de fogo sem supervisão.</p>
+      </section>
+      <section class="page" id="page-glowup">
+        <div class="page-intro"><p class="eyebrow">CUIDAR DE SI É UM PROCESSO</p><h1>Glow up <em>tracker</em></h1><p class="muted">Acompanhe metas de beleza, saúde, bem-estar e confiança com gentileza.</p></div>
+        <article class="card feature-form-card"><p class="eyebrow">NOVA META DE CUIDADO</p><form id="glowForm" class="feature-form"><label>O que deseja acompanhar?<input id="glowTitle" maxlength="90" required></label><div class="feature-form-grid"><label>Categoria<select id="glowCategory"><option>Cabelos</option><option>Pele</option><option>Movimento</option><option>Saúde e bem-estar</option><option>Estilo</option><option>Autoestima</option><option>Outro</option></select></label><label>Meta ou frequência<input id="glowTarget" maxlength="90" placeholder="Ex.: hidratar 1 vez por semana"></label></div><label>Próxima data (opcional)<input id="glowDate" type="date"></label><label class="feature-upload">Foto de acompanhamento (opcional)<input id="glowPhoto" type="file" accept="image/*"></label><button class="primary-btn">Adicionar ao meu glow up</button></form></article>
+        <div class="section-heading"><div><p class="eyebrow">PEQUENAS CONQUISTAS</p><h2>Meu acompanhamento</h2></div><span class="pill" id="glowCount">0 metas</span></div><div class="feature-card-grid" id="glowList"></div>
+      </section>
+      <section class="page" id="page-finance">
+        <div class="page-intro"><p class="eyebrow">CLAREZA TAMBÉM É AUTOCUIDADO</p><h1>Minha vida <em>financeira</em></h1><p class="muted">Organize entradas, saídas, contas, cartões e objetivos. Os valores ficam salvos apenas neste navegador nesta versão.</p></div>
+        <div class="finance-summary"><article class="card"><p class="eyebrow">RECEITAS DO MÊS</p><strong id="financeIncome">R$ 0,00</strong></article><article class="card"><p class="eyebrow">DESPESAS DO MÊS</p><strong id="financeExpense">R$ 0,00</strong></article><article class="card"><p class="eyebrow">SALDO DO MÊS</p><strong id="financeBalance">R$ 0,00</strong></article></div>
+        <article class="card feature-form-card"><p class="eyebrow">LANÇAMENTO</p><form id="financeForm" class="feature-form"><div class="feature-form-grid"><label>Tipo<select id="financeType"><option value="expense">Despesa</option><option value="income">Receita</option></select></label><label>Data<input id="financeDate" type="date" required></label></div><label>Descrição<input id="financeTitle" maxlength="100" required placeholder="Ex.: mercado, salário, conta de luz"></label><div class="feature-form-grid"><label>Valor (R$)<input id="financeAmount" type="number" min="0.01" step="0.01" required></label><label>Categoria<select id="financeCategory"><option>Moradia</option><option>Alimentação</option><option>Transporte</option><option>Saúde</option><option>Educação</option><option>Lazer</option><option>Beleza e cuidados</option><option>Família</option><option>Assinaturas</option><option>Salário</option><option>Freelance</option><option>Investimentos</option><option>Outros</option></select></label></div><div class="feature-form-grid"><label>Conta / carteira<input id="financeAccount" maxlength="60" placeholder="Ex.: conta corrente"></label><label>Cartão (opcional)<input id="financeCard" maxlength="60" placeholder="Ex.: cartão principal"></label></div><button class="primary-btn">Salvar lançamento</button></form></article>
+        <div class="section-heading"><div><p class="eyebrow">VISÃO DO MÊS</p><h2>Despesas por categoria</h2></div><label class="month-picker">Mês<input id="financeMonth" type="month"></label></div>
+        <article class="card"><div id="financeChart" class="finance-chart"></div><div class="section-heading compact"><div><p class="eyebrow">MOVIMENTAÇÕES</p><h2>Histórico financeiro</h2></div></div><div id="financeList" class="finance-list"></div></article>
+        <div class="section-heading"><div><p class="eyebrow">PLANOS COM PROPÓSITO</p><h2>Minhas metas financeiras</h2></div></div>
+        <article class="card feature-form-card"><form id="financeGoalForm" class="feature-form"><label>Nome do objetivo<input id="financeGoalTitle" maxlength="80" required placeholder="Ex.: reserva de emergência"></label><div class="feature-form-grid"><label>Valor desejado (R$)<input id="financeGoalTarget" type="number" min="0.01" step="0.01" required></label><label>Quanto já tenho (R$)<input id="financeGoalCurrent" type="number" min="0" step="0.01" value="0"></label></div><button class="primary-btn">Criar meta</button></form><div id="financeGoals" class="finance-goals"></div></article>
+        <p class="note">Organizador manual, sem conexão bancária. Valores são registrados em centavos para evitar imprecisão de casas decimais.</p>
+      </section>
+      <section class="page" id="page-lifelist">
+        <div class="page-intro"><p class="eyebrow">A VIDA TAMBÉM ACONTECE FORA DA ROTINA</p><h1>Minha <em>Life List</em></h1><p class="muted">Uma lista viva de experiências, aventuras, aprendizados e coisas que você quer fazer — grandes ou pequenas.</p></div>
+        <article class="card feature-form-card"><p class="eyebrow">ADICIONAR À LISTA</p><form id="lifeForm" class="feature-form"><label>O que você quer viver?<input id="lifeTitle" maxlength="100" required placeholder="Ex.: fazer uma aula de cerâmica"></label><div class="feature-form-grid"><label>Categoria<select id="lifeCategory"><option>Experiências</option><option>Viagens</option><option>Aprendizado</option><option>Família</option><option>Amizades</option><option>Coragem</option><option>Projetos pessoais</option><option>Outros</option></select></label><label>Quando gostaria?<input id="lifeDate" type="date"></label></div><button class="primary-btn">Adicionar à minha Life List</button></form></article>
+        <div class="section-heading"><div><p class="eyebrow">SEUS DESEJOS EM MOVIMENTO</p><h2>O que quero viver</h2></div><span class="pill" id="lifeCount">0 itens</span></div><div id="lifeList" class="life-list"></div>
+      </section>
+      <section class="page" id="page-selfcare">
+        <div class="page-intro"><p class="eyebrow">UM CARDÁPIO DE POSSIBILIDADES</p><h1>Autocuidado <em>& presença</em></h1><p class="muted">Escolha algo que combine com seu tempo, sua energia e seu momento. Não é uma lista de obrigações.</p></div>
+        <article class="card"><div class="card-top"><div><p class="eyebrow">IDEIAS PARA CUIDAR DE VOCÊ</p><h2>Meu menu de autocuidado</h2><p class="muted small">Marque o que você fez hoje. Amanhã, a lista recomeça.</p></div><span class="pill" id="selfcareCount">0 feitos</span></div><div id="selfcareOptions" class="selfcare-options"></div></article>
+        <div class="section-heading"><div><p class="eyebrow">PAUSAS GUIADAS</p><h2>Três meditações para você</h2></div></div>
+        <div class="meditation-grid">
+          <article class="card meditation-card"><span>🌬️ · 5 MIN</span><h3>Respirar e voltar ao presente</h3><p class="muted small">Para momentos de pressa, excesso de pensamentos ou começo do dia.</p><details><summary>Começar meditação</summary><div class="meditation-script"><p>Sente-se de um jeito confortável. Apoie os pés no chão e solte os ombros.</p><p>Inspire suavemente pelo nariz contando até quatro. Solte o ar devagar contando até seis. Não force a respiração; encontre um ritmo confortável.</p><p>Perceba três coisas que consegue ouvir. Sinta o apoio do corpo na cadeira ou no chão.</p><p>Se um pensamento aparecer, reconheça-o sem brigar com ele e volte a atenção para a próxima respiração.</p><p>Repita por alguns minutos. Ao terminar, pergunte a si mesma: qual é o próximo passo possível, apenas um?</p></div></details></article>
+          <article class="card meditation-card"><span>🌿 · 8 MIN</span><h3>Escaneamento corporal</h3><p class="muted small">Para desacelerar e perceber tensões com gentileza.</p><details><summary>Começar meditação</summary><div class="meditation-script"><p>Deite-se ou sente-se com apoio. Se preferir, mantenha os olhos abertos e um olhar suave.</p><p>Leve a atenção aos pés. Perceba contato, temperatura e sensações, sem precisar mudar nada.</p><p>Suba lentamente pelas pernas, quadris, abdômen, costas, mãos, braços, ombros, pescoço e rosto.</p><p>Em cada região, inspire com naturalidade e, ao soltar o ar, permita que os músculos relaxem apenas o que for confortável.</p><p>Se encontrar desconforto, não force. Apenas reconheça a sensação e volte para uma região neutra, como as mãos ou os pés.</p><p>Finalize percebendo o corpo como um todo. Agradeça por ter reservado este tempo.</p></div></details></article>
+          <article class="card meditation-card"><span>💗 · 6 MIN</span><h3>Acolhimento e autocompaixão</h3><p class="muted small">Para dias difíceis, autocrítica ou sensação de não estar dando conta.</p><details><summary>Começar meditação</summary><div class="meditation-script"><p>Encontre uma posição confortável. Se fizer sentido, coloque uma mão sobre o peito ou sobre o abdômen.</p><p>Respire naturalmente e reconheça como você está agora. Não precisa fingir que está tudo bem.</p><p>Repita mentalmente: “Este momento é difícil, e eu posso me tratar com gentileza.”</p><p>Lembre-se de que outras pessoas também enfrentam dias imperfeitos. Você não precisa resolver tudo neste instante.</p><p>Pergunte: “O que eu diria a alguém que amo se estivesse vivendo isso?” Experimente oferecer a si mesma as mesmas palavras.</p><p>Finalize escolhendo um gesto pequeno de cuidado para hoje: água, descanso, pedir ajuda, sair um pouco ao ar livre ou simplesmente pausar.</p></div></details></article>
+        </div><p class="note">As meditações são textos de atenção plena, não substituem cuidado profissional. Se alguma prática causar desconforto, interrompa e volte ao seu ritmo habitual de respiração.</p>
+      </section>
       <footer>feito com intenção <span>☼</span> my sun · sua jornada, seu ritmo</footer>
     </main>
   </div>
   <div class="toast" id="toast"></div>
   <script src="app.js"></script>
+  <script src="features.js"></script>
 </body>
 </html>
