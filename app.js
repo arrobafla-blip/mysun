@@ -66,7 +66,7 @@ function renderFood(){
  const qty=document.createElement("p");qty.textContent=(m.grams?m.grams+" g · ":"")+(m.kcal!==null&&m.kcal!==undefined?Math.round(m.kcal)+" kcal estimadas":"calorias não informadas")+(m.sugar?" · doce com açúcar":"");
  const del=document.createElement("button");del.className="meal-delete";del.textContent="×";del.title="Excluir refeição";del.addEventListener("click",()=>{if(confirm("Excluir este registro alimentar?")){state.meals[date]=state.meals[date].filter(x=>x!==m);save();renderFood()}});
  info.append(type,name,qty);if(m.kcal!==null&&m.kcal!==undefined){const kcal=document.createElement("strong");kcal.textContent=Math.round(m.kcal)+" kcal";info.appendChild(kcal)}item.append(info,del);host.appendChild(item)});
- renderFoodCalendar();renderFasting(date);
+ renderFoodCalendar();renderFasting(date);renderFoodSchedule();
 }
 function renderFoodSchedule(){
  const defaults={"Café da manhã":"07:30","Lanche da manhã":"10:00","Almoço":"12:30","Lanche da tarde":"15:30","Jantar":"19:00","Ceia":"21:00"};
@@ -126,7 +126,7 @@ document.getElementById("foodForm").addEventListener("submit",e=>{
  mealsFor(date).push({type:document.getElementById("mealType").value,name,grams,kcal,time:document.getElementById("mealTime").value||"",sugar:document.getElementById("mealSugar").checked,photo:selectedMealPhoto||"",createdAt:new Date().toISOString()});
  save();e.target.reset();document.getElementById("foodGrams").value=100;document.getElementById("foodEntryDate").value=date;document.getElementById("foodSearchStatus").textContent="Pesquisa opcional na base Open Food Facts.";document.getElementById("foodSearchResults").innerHTML="";document.getElementById("mealPhotoPreview").innerHTML="";selectedMealPhoto="";updateKcalPreview();renderFood();toast("Refeição registrada. Bom cuidado! ♡")
 });
-document.getElementById("foodEntryDate").value=todayKey();document.getElementById("foodEntryDate").addEventListener("change",renderFood);
+document.getElementById("foodEntryDate").value=todayKey();document.getElementById("foodEntryDate").addEventListener("change",()=>{document.getElementById("foodCalendarMonth").value=foodDate().slice(0,7);renderFood()});
 document.getElementById("foodCalendarMonth").value=todayKey().slice(0,7);document.getElementById("foodCalendarMonth").addEventListener("change",renderFoodCalendar);
 document.getElementById("foodCalendarPrev").addEventListener("click",()=>{const p=foodMonth().split("-").map(Number),d=new Date(p[0],p[1]-2,1);document.getElementById("foodCalendarMonth").value=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0");renderFoodCalendar()});
 document.getElementById("foodCalendarNext").addEventListener("click",()=>{const p=foodMonth().split("-").map(Number),d=new Date(p[0],p[1],1);document.getElementById("foodCalendarMonth").value=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0");renderFoodCalendar()});
