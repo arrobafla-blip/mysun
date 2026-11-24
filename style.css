@@ -62,3 +62,40 @@
 .cycle-pattern-card li{font-size:11px;line-height:1.7;color:var(--muted);margin:5px 0}
 .cycle-sleep-card{margin-bottom:18px}
 @media(max-width:760px){.cycle-pattern-grid{grid-template-columns:1fr}}
+
+/* Visão geral: calendário e resumo por dia */
+.overview-calendar-card,.overview-day-card{margin-bottom:17px}
+.overview-month-controls{display:flex;align-items:center;gap:9px}
+.overview-month-controls strong{font:500 14px "Playfair Display";text-transform:capitalize;color:var(--rose-dark);min-width:118px;text-align:center}
+.overview-month-controls .secondary-btn{font-size:18px;line-height:1;padding:7px 12px}
+.overview-calendar{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:7px;margin-top:18px}
+.overview-weekday{text-align:center;font-size:10px;font-weight:700;color:#a18b85;padding:7px 0}
+.overview-blank{min-height:68px}
+.overview-day{min-width:0;min-height:68px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;border:1px solid #eee3de;background:#fffdfa;border-radius:10px;color:var(--ink);cursor:pointer}
+.overview-day b{font-size:13px}
+.overview-day.selected{border:2px solid #b9858a;background:#f8eeec}
+.overview-day.today{box-shadow:inset 0 0 0 1px #c5ad83}
+.overview-day-marks{font-size:9px;letter-spacing:2px;color:#a87970;min-height:10px;white-space:nowrap}
+.overview-legend{display:flex;flex-wrap:wrap;gap:10px 18px;margin-top:14px;font-size:10px;color:var(--muted)}
+.overview-legend span:first-letter{color:var(--rose-dark)}
+.overview-metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:14px}
+.overview-metric{min-width:0;padding:13px;background:#fbf6f2;border:1px solid #efe5df;border-radius:11px;display:grid;gap:6px}
+.overview-metric-top{display:flex;align-items:center;gap:7px;color:#9b7777}
+.overview-metric-top>span{font-size:16px}
+.overview-metric-top small{font-size:10px;color:var(--muted)}
+.overview-metric>b{font:500 16px "Playfair Display";color:var(--rose-dark);overflow-wrap:anywhere}
+.overview-metric-status{font-size:10px;line-height:1.45;color:var(--muted)}
+.overview-details{margin-top:14px;padding:13px 15px;background:#fffdfa;border-radius:10px;border:1px solid var(--line)}
+.overview-details p{font-size:11px;line-height:1.7;color:var(--muted);margin:5px 0}
+.overview-details b{color:#806f6d}
+.finance-donut-layout{display:grid;grid-template-columns:minmax(180px,.8fr) 1.2fr;align-items:center;gap:25px;padding:12px 4px}
+.finance-donut{width:min(230px,100%);aspect-ratio:1;border-radius:50%;display:grid;place-items:center;margin:auto}
+.finance-donut-hole{width:62%;height:62%;border-radius:50%;background:#fffdfa;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;box-shadow:0 0 0 1px #eee5df}
+.finance-donut-hole small{font-size:8px;letter-spacing:1px;color:var(--muted)}
+.finance-donut-hole strong{font:500 18px "Playfair Display";color:var(--rose-dark);text-align:center}
+.finance-donut-legend{display:grid;gap:11px}
+.finance-donut-row{display:grid;grid-template-columns:11px minmax(80px,1fr) auto;gap:9px;align-items:center;font-size:11px}
+.finance-donut-row i{width:10px;height:10px;border-radius:3px}
+.finance-donut-row span{color:var(--ink)}
+.finance-donut-row b{font-size:10px;color:var(--muted);white-space:nowrap}
+@media(max-width:760px){.overview-calendar{gap:4px}.overview-day,.overview-blank{min-height:53px}.overview-day-marks{font-size:7px;letter-spacing:1px}.overview-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.finance-donut-layout{grid-template-columns:1fr;gap:18px}.finance-donut{width:190px}.finance-donut-legend{gap:9px}}
