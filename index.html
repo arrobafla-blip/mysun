@@ -29,6 +29,7 @@
         <button class="nav-link" data-page="food"><span>♧</span> Alimentação</button>
         <button class="nav-link" data-page="monthlygoals"><span>✧</span> Metas do mês</button>
         <button class="nav-link" data-page="training"><span>↗</span> Meus treinos</button>
+        <button class="nav-link" data-page="cycle"><span>☾</span> Meu ciclo</button>
         <button class="nav-link" data-page="spiritual"><span>☾</span> Espiritualidade</button>
 
         <div class="side-label extra-label">SEU FLORESCIMENTO</div>
@@ -191,7 +192,25 @@
         <p class="note">A frequência semanal considera segunda a domingo. Cardio e outras atividades ficam registrados separadamente; uma sessão não precisa ser intensa para contar como movimento.</p>
       </section>
 
-      <section class="page" id="page-spiritual">
+      <section class="page" id="page-cycle">
+ <div class="page-intro"><p class="eyebrow">SEU CORPO TEM SEUS PRÓPRIOS RITMOS</p><h1>Meu <em>ciclo menstrual</em></h1><p class="muted">Acompanhe suas datas, observe padrões e encontre sugestões gentis para cada fase.</p></div>
+ <div class="cycle-overview">
+  <article class="card cycle-current"><p class="eyebrow">FASE ESTIMADA DE HOJE</p><div class="cycle-phase-symbol" id="cyclePhaseSymbol">☾</div><h2 id="cyclePhaseName">Registre sua menstruação</h2><p class="muted" id="cyclePhaseDay">Para começar a estimar seu ciclo, informe o primeiro dia da última menstruação.</p><div class="cycle-next" id="cycleNextPrediction">Sua previsão aparecerá aqui.</div></article>
+  <article class="card"><p class="eyebrow">PRÓXIMA MENSTRUAÇÃO</p><strong class="cycle-big-number" id="cycleNextDate">—</strong><p class="muted small" id="cyclePredictionNote">Previsão baseada nos ciclos registrados.</p><div class="cycle-stats"><div><span>Duração média</span><b id="cycleAverage">—</b></div><div><span>Registros</span><b id="cycleCount">0 ciclos</b></div></div></article>
+ </div>
+ <article class="card feature-form-card"><p class="eyebrow">REGISTRO DO CICLO</p><h2>Registre o início da menstruação</h2><p class="muted small">Considere como dia 1 o primeiro dia de fluxo menstrual. Não registre apenas escapes.</p><form id="cycleForm" class="feature-form"><div class="feature-form-grid"><label>Primeiro dia da menstruação<input id="cycleStartDate" type="date" required></label><label>Duração habitual do sangramento (dias)<input id="cycleBleedLength" type="number" min="1" max="10" value="5"></label></div><label>Observações (opcional)<textarea id="cycleNotes" rows="2" maxlength="400" placeholder="Sintomas, cólicas, alterações que queira observar..."></textarea></label><button class="primary-btn" type="submit">Salvar início do ciclo</button></form></article>
+ <div class="section-heading"><div><p class="eyebrow">CONHEÇA SEU CICLO</p><h2>As quatro fases</h2></div><span class="pill">Guia de autocuidado</span></div>
+ <div class="cycle-phase-grid">
+  <article class="card"><span class="cycle-phase-symbol">🩸</span><p class="eyebrow">FASE MENSTRUAL</p><h3>Desacelerar e acolher</h3><p>O endométrio é eliminado e começa um novo ciclo.</p><ul><li>Priorize descanso e sono.</li><li>Movimente-se conforme o conforto: caminhada leve, alongamento ou pausa.</li><li>Prefira refeições nutritivas e mantenha a hidratação.</li><li>Observe cólicas, fluxo e energia.</li></ul></article>
+  <article class="card"><span class="cycle-phase-symbol">🌱</span><p class="eyebrow">FASE FOLICULAR</p><h3>Retomar gradualmente</h3><p>O folículo amadurece e o estrogênio tende a aumentar.</p><ul><li>Experimente retomar treinos e aumentar a intensidade se estiver bem.</li><li>Planeje tarefas e projetos se isso combinar com sua disposição.</li><li>Inclua variedade de alimentos, proteínas e fibras.</li><li>Respeite a energia real, não uma expectativa.</li></ul></article>
+  <article class="card"><span class="cycle-phase-symbol">☀️</span><p class="eyebrow">FASE OVULATÓRIA</p><h3>Observar o pico</h3><p>Ocorre a liberação do óvulo; o momento varia entre pessoas e ciclos.</p><ul><li>Se estiver confortável, mantenha suas atividades habituais.</li><li>Observe mudanças no muco cervical e outros sinais, sem depender só deles.</li><li>Se não deseja engravidar, não use esta previsão como contracepção.</li><li>Cuide do descanso e da hidratação.</li></ul></article>
+  <article class="card"><span class="cycle-phase-symbol">🍂</span><p class="eyebrow">FASE LÚTEA</p><h3>Nutrir e equilibrar</h3><p>Após a ovulação, a progesterona aumenta; sintomas pré-menstruais podem aparecer.</p><ul><li>Planeje uma rotina mais flexível se notar queda de energia.</li><li>Mantenha refeições regulares e observe fome e desejos sem culpa.</li><li>Escolha movimento confortável e preserve o sono.</li><li>Registre humor, inchaço, sensibilidade e cólicas.</li></ul></article>
+ </div>
+ <article class="card cycle-history-card"><div class="section-heading compact"><div><p class="eyebrow">SEU HISTÓRICO</p><h2>Inícios registrados</h2></div><span class="pill" id="cycleHistoryCount">0 registros</span></div><div id="cycleHistory" class="cycle-history"></div></article>
+ <p class="note">As fases e datas são estimativas calculadas a partir dos registros. A ovulação pode variar, mesmo em ciclos regulares. Este recurso não diagnostica condições, não confirma ovulação e não deve ser usado para evitar gravidez. Se os ciclos forem muito irregulares, houver dor intensa ou sangramento incomum, converse com um profissional de saúde.</p>
+</section>
+
+<section class="page" id="page-spiritual">
         <div class="page-intro"><p class="eyebrow">CICLOS, INTENÇÃO E PRESENÇA</p><h1>Espiritualidade <em>& autoconhecimento</em></h1><p class="muted">Um espaço para observar os ciclos, criar pequenos rituais e se escutar com mais carinho.</p></div>
         <article class="card moon-now-card"><div><p class="eyebrow">CÉU DO MOMENTO · 24 NOV 2026</p><h2>🌕 Lua Cheia em Gêmeos</h2><p class="muted">A Lua Cheia acontece hoje às 11h54 (horário de Brasília). Um convite simbólico à clareza, à comunicação e à celebração do que amadureceu.</p><p class="small muted">Use a fase lunar como inspiração pessoal, não como regra ou garantia de resultados.</p></div><div class="moon-big">🌕</div></article>
         <div class="section-heading"><div><p class="eyebrow">SEU CALENDÁRIO LUNAR</p><h2>Próximas fases da Lua</h2></div><span class="pill">Nov — Dez 2026</span></div>
