@@ -148,3 +148,7 @@
 #page-home .hero-grid article.card.dash-small,#page-home .dashboard-grid article.card.dash-small{width:auto;grid-column:span 1}
 #page-home .hero-grid article.card.dash-large,#page-home .dashboard-grid article.card.dash-large{width:auto;grid-column:1/-1}
 @media(max-width:760px){#page-home article.card.dash-small{width:100%}}
+
+.overview-edit-links{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-top:13px;padding-top:13px;border-top:1px solid var(--line)}
+.overview-edit-links .eyebrow{width:100%;margin:0 0 2px}
+.overview-edit-links .secondary-btn{font-size:10px;padding:7px 10px}
