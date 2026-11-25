@@ -65,7 +65,7 @@ function selectOverviewDate(value){
  overviewSelectedDate=value;overviewMonth=value.slice(0,7);
  ["foodEntryDate","trainingDate","sleepDate","moodDate","selfcareDate","journalEntryDate"].forEach(id=>{const el=document.getElementById(id);if(el)el.value=value});
  const fm=document.getElementById("foodCalendarMonth");if(fm)fm.value=overviewMonth;
- renderOverviewCalendar();renderToday();renderWater();renderJournal();
+ renderOverviewCalendar();renderToday();renderWater();renderJournal();renderSpiritual();
  if(typeof renderFood==="function")renderFood();
  window.dispatchEvent(new Event("mySunSelectedDateChanged"));
 }
@@ -164,8 +164,8 @@ function renderFood(){
  meals.forEach(m=>{const item=document.createElement("article");item.className="food-meal-item";if(m.photo){const img=document.createElement("img");img.src=m.photo;img.alt="Foto da refeição";item.appendChild(img)}
  const info=document.createElement("div");info.className="food-meal-info";const type=document.createElement("div");type.className="meal-type";type.textContent=(m.time?m.time+" · ":"")+m.type;const name=document.createElement("h3");name.textContent=m.name;
  const qty=document.createElement("p");qty.textContent=(m.grams?m.grams+" g · ":"")+(m.kcal!==null&&m.kcal!==undefined?Math.round(m.kcal)+" kcal estimadas":"calorias não informadas")+(m.sugar?" · doce com açúcar":"");
- const del=document.createElement("button");del.className="meal-delete";del.textContent="×";del.title="Excluir refeição";del.addEventListener("click",()=>{if(confirm("Excluir este registro alimentar?")){state.meals[date]=state.meals[date].filter(x=>x!==m);save();renderFood()}});
- info.append(type,name,qty);if(m.kcal!==null&&m.kcal!==undefined){const kcal=document.createElement("strong");kcal.textContent=Math.round(m.kcal)+" kcal";info.appendChild(kcal)}item.append(info,del);host.appendChild(item)});
+ const edit=document.createElement("button");edit.className="meal-delete";edit.textContent="✎";edit.title="Editar refeição";edit.addEventListener("click",()=>{const name=prompt("Alimento / refeição",m.name);if(name===null||!name.trim())return;const grams=prompt("Quantidade em gramas",String(m.grams||100));if(grams===null)return;const kcal=prompt("Calorias da porção",m.kcal==null?"":String(m.kcal));if(kcal===null)return;const protein=prompt("Proteínas da porção (g)",m.protein==null?"":String(m.protein));if(protein===null)return;const carbs=prompt("Carboidratos da porção (g)",m.carbs==null?"":String(m.carbs));if(carbs===null)return;const fat=prompt("Gorduras da porção (g)",m.fat==null?"":String(m.fat));if(fat===null)return;m.name=name.trim();m.grams=Number(grams)||0;m.kcal=kcal.trim()===""?null:Number(kcal);m.protein=protein.trim()===""?null:Number(protein);m.carbs=carbs.trim()===""?null:Number(carbs);m.fat=fat.trim()===""?null:Number(fat);save();renderFood();renderOverviewCalendar()});const del=document.createElement("button");del.className="meal-delete";del.textContent="×";del.title="Excluir refeição";del.addEventListener("click",()=>{if(confirm("Excluir este registro alimentar?")){state.meals[date]=state.meals[date].filter(x=>x!==m);save();renderFood()}});
+ info.append(type,name,qty);if(m.kcal!==null&&m.kcal!==undefined){const kcal=document.createElement("strong");kcal.textContent=Math.round(m.kcal)+" kcal";info.appendChild(kcal)}item.append(info,edit,del);host.appendChild(item)});
  renderFoodCalendar();renderFasting(date);renderFoodSchedule();
 }
 function renderFoodSchedule(){
@@ -195,9 +195,9 @@ function renderFoodCalendar(){
  cell.addEventListener("click",()=>{document.getElementById("foodEntryDate").value=key;renderFood()});host.appendChild(cell)}
 }
 const reflectionPrompts=["O que estou pronta para deixar ir?","Que parte de mim precisa de mais acolhimento?","O que significa prosperidade para mim neste momento?","Qual pequeno passo me aproximaria da vida que desejo?","Que padrão já não combina com a pessoa que estou me tornando?","Do que eu gostaria de me orgulhar daqui a seis meses?"];
-function renderSpiritual(){const entry=state.spiritualReflections?.[todayKey()]||"";document.getElementById("spiritualReflection").value=entry;document.getElementById("newYearIntentions").value=state.newYearIntentions||"";}
+function renderSpiritual(){const d=window.mySunSelectedDate?window.mySunSelectedDate():todayKey(),entry=state.spiritualReflections?.[d]||"";document.getElementById("spiritualReflection").value=entry;document.getElementById("newYearIntentions").value=state.newYearIntentions||"";}
 document.getElementById("newReflectionPrompt").addEventListener("click",()=>{const current=document.getElementById("reflectionPrompt").textContent;const options=reflectionPrompts.filter(x=>x!==current);document.getElementById("reflectionPrompt").textContent=options[Math.floor(Math.random()*options.length)]});
-document.getElementById("saveSpiritualReflection").addEventListener("click",()=>{state.spiritualReflections=state.spiritualReflections||{};state.spiritualReflections[todayKey()]=document.getElementById("spiritualReflection").value.trim();save();document.getElementById("spiritualStatus").textContent="Reflexão salva neste dispositivo.";setTimeout(()=>document.getElementById("spiritualStatus").textContent="",2500)});
+document.getElementById("saveSpiritualReflection").addEventListener("click",()=>{state.spiritualReflections=state.spiritualReflections||{};const d=window.mySunSelectedDate?window.mySunSelectedDate():todayKey();state.spiritualReflections[d]=document.getElementById("spiritualReflection").value.trim();save();document.getElementById("spiritualStatus").textContent="Reflexão salva neste dispositivo.";setTimeout(()=>document.getElementById("spiritualStatus").textContent="",2500)});
 document.getElementById("saveNewYearIntentions").addEventListener("click",()=>{state.newYearIntentions=document.getElementById("newYearIntentions").value.trim();save();document.getElementById("newYearStatus").textContent="Suas intenções foram salvas neste dispositivo.";setTimeout(()=>document.getElementById("newYearStatus").textContent="",2500)});
 
 let selectedMealPhoto="";
