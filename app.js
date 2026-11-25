@@ -59,6 +59,16 @@ function renderDashboardCustomizer(){
  cards.forEach(card=>{card.ondragstart=e=>{if(!state.dashboardLayout?.editing){e.preventDefault();return}card.classList.add("dragging");e.dataTransfer.setData("text/plain",card.dataset.dashboardKey)};card.ondragend=()=>card.classList.remove("dragging");card.ondragover=e=>{if(state.dashboardLayout?.editing)e.preventDefault()};card.ondrop=e=>{if(!state.dashboardLayout?.editing)return;e.preventDefault();const key=e.dataTransfer.getData("text/plain"),drag=cards.find(x=>x.dataset.dashboardKey===key);if(!drag||drag===card||drag.parentElement!==card.parentElement)return;card.parentElement.insertBefore(drag,card);const p=card.parentElement,parentKey=p.id||p.className||"home";state.dashboardLayout.order=state.dashboardLayout.order||{};state.dashboardLayout.order[parentKey]=[...p.querySelectorAll(":scope > article.card")].map(x=>x.dataset.dashboardKey);save()}});
 }
 
+
+function selectOverviewDate(value){
+ if(!/^\\d{4}-\\d{2}-\\d{2}$/.test(value))return;
+ overviewSelectedDate=value;overviewMonth=value.slice(0,7);
+ ["foodEntryDate","trainingDate","sleepDate","moodDate","selfcareDate","journalEntryDate"].forEach(id=>{const el=document.getElementById(id);if(el)el.value=value});
+ const fm=document.getElementById("foodCalendarMonth");if(fm)fm.value=overviewMonth;
+ renderOverviewCalendar();renderToday();renderWater();renderJournal();
+ if(typeof renderFood==="function")renderFood();
+ window.dispatchEvent(new Event("mySunSelectedDateChanged"));
+}
 function overviewDateLabel(d){return new Date(d+"T12:00:00").toLocaleDateString("pt-BR",{weekday:"long",day:"numeric",month:"long",year:"numeric"})}
 function overviewRecords(date){
  const meals=state.meals[date]||[],training=(state.trainingSessions||[]).filter(x=>x.date===date),selfcare=(state.selfCareLog||[]).filter(x=>x.date===date),sleep=(state.sleepLogs||[]).find(x=>x.date===date),mood=(state.moods||[]).find(x=>x.date===date),journal=state.journals[date]||{},water=Number(state.water[date]||0),waterGoal=(Number(state.waterGoal)||3)*(Number(state.bottleSize)||600),habits=state.logs[date]||{};
@@ -76,7 +86,7 @@ function renderOverviewCalendar(){
   const marks=document.createElement("span");marks.className="overview-day-marks";
   if(r.meals.length)marks.append("●");if(r.training.length)marks.append("◆");if(r.selfcare.length)marks.append("♥");if(r.sleep)marks.append("☾");
   cell.appendChild(marks);cell.title=[r.meals.length? "Alimentação registrada":"",r.training.length?"Treino registrado":"",r.selfcare.length?"Autocuidado registrado":"",r.sleep?"Sono registrado":""].filter(Boolean).join(" · ")||"Sem registros neste dia";
-  cell.addEventListener("click",()=>{overviewSelectedDate=key;renderOverviewCalendar()});host.appendChild(cell);
+  cell.addEventListener("click",()=>selectOverviewDate(key));host.appendChild(cell);
  }
  renderOverviewDay();
 }
@@ -229,7 +239,7 @@ document.getElementById("saveJournal").addEventListener("click",()=>{const d=doc
 document.getElementById("backupBtn").addEventListener("click",()=>{const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download="my-sun-backup-"+todayKey()+".json";a.click();URL.revokeObjectURL(url);toast("Backup preparado para salvar.")});
 document.getElementById("importFile").addEventListener("change",async e=>{const file=e.target.files[0];if(!file)return;try{const data=JSON.parse(await file.text());if(!data.habits||!data.logs)throw Error();if(confirm("Importar este backup? Os dados atuais deste navegador serão substituídos.")){state={...fresh(),...data};save();render();window.dispatchEvent(new Event("mySunStateUpdated"));toast("Backup importado com sucesso.")}}catch(err){alert("Não foi possível importar. Confira se o arquivo é um backup do my sun.")}e.target.value=""});
 
-document.getElementById("overviewPrev").addEventListener("click",()=>{const [y,m]=overviewMonth.split("-").map(Number),d=new Date(y,m-2,1);overviewMonth=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0");overviewSelectedDate=overviewMonth+"-01";renderOverviewCalendar()});
-document.getElementById("overviewNext").addEventListener("click",()=>{const [y,m]=overviewMonth.split("-").map(Number),d=new Date(y,m,1);overviewMonth=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0");overviewSelectedDate=overviewMonth+"-01";renderOverviewCalendar();renderToday();renderWater();renderJournal()});
-document.getElementById("overviewEditDate").addEventListener("change",e=>{if(!e.target.value)return;overviewSelectedDate=e.target.value;overviewMonth=e.target.value.slice(0,7);["foodEntryDate","trainingDate","sleepDate","moodDate","selfcareDate","journalEntryDate"].forEach(id=>{const el=document.getElementById(id);if(el)el.value=overviewSelectedDate});const fm=document.getElementById("foodCalendarMonth");if(fm)fm.value=overviewMonth;renderOverviewCalendar();renderToday();renderWater();renderJournal();if(typeof renderAll==="function")renderAll();});
+document.getElementById("overviewPrev").addEventListener("click",()=>{const [y,m]=overviewMonth.split("-").map(Number),d=new Date(y,m-2,1);selectOverviewDate(d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-01")});
+document.getElementById("overviewNext").addEventListener("click",()=>{const [y,m]=overviewMonth.split("-").map(Number),d=new Date(y,m,1);selectOverviewDate(d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-01")});
+document.getElementById("overviewEditDate").addEventListener("change",e=>{if(e.target.value)selectOverviewDate(e.target.value)});
 render();
