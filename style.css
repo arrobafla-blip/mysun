@@ -152,3 +152,9 @@
 .overview-edit-links{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-top:13px;padding-top:13px;border-top:1px solid var(--line)}
 .overview-edit-links .eyebrow{width:100%;margin:0 0 2px}
 .overview-edit-links .secondary-btn{font-size:10px;padding:7px 10px}
+
+/* Cursor personalizado My Sun: carta de tarot em estética soft mystic */
+:root{--mysun-tarot-cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='44' viewBox='0 0 40 44'%3E%3Crect x='5' y='3' width='27' height='36' rx='4' transform='rotate(-8 18 21)' fill='%23bd858b' stroke='%2398646d' stroke-width='1.6'/%3E%3Crect x='8' y='5' width='25' height='34' rx='3' transform='rotate(-2 20 22)' fill='%23fffdfa' stroke='%23bd9b63' stroke-width='1.5'/%3E%3Crect x='11' y='8' width='19' height='28' rx='2' transform='rotate(-2 20 22)' fill='%23f5e9e5' stroke='%23bd858b' stroke-width='1'/%3E%3Cpath d='M21 13a7 7 0 1 0 6 11 6 6 0 0 1-6-11Z' fill='%23bd9b63'/%3E%3Cpath d='m15 29 2-3 2 3 2-3 2 3' fill='none' stroke='%23bd858b' stroke-width='1.3' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='m29 5 1.2-3 1.2 3 3 .9-3 .9-1.2 3-1.2-3-3-.9Z' fill='%23bd9b63'/%3E%3C/svg%3E") 8 7, auto}
+html,body{cursor:var(--mysun-tarot-cursor)}
+a,button,[role="button"],summary{cursor:var(--mysun-tarot-cursor)}
+input,textarea,select,[contenteditable="true"]{cursor:text}
