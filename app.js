@@ -35,7 +35,7 @@ function renderMonthlyGoals(){
  if(bar)bar.style.width=pct+"%";if(amount)amount.textContent=ml.toLocaleString("pt-BR")+" ml";if(percent)percent.textContent=Math.round(pct)+"%";
 }
 function render(){
- const now=new Date();document.getElementById("todayLabel").textContent=now.toLocaleDateString("pt-BR",{weekday:"long",day:"numeric",month:"long"});document.getElementById("longDate").textContent=now.toLocaleDateString("pt-BR",{day:"2-digit",month:"short"});document.getElementById("journalDate").textContent=dateText(todayKey());
+ const now=new Date();document.getElementById("todayLabel").textContent=now.toLocaleDateString("pt-BR",{weekday:"long",day:"numeric",month:"long"});document.getElementById("longDate").textContent=new Date(overviewSelectedDate+"T12:00:00").toLocaleDateString("pt-BR",{day:"2-digit",month:"short"});document.getElementById("journalDate").textContent=dateText(todayKey());
  updateGreeting();renderToday();renderOverviewCalendar();renderWater();renderMonthlyGoals();renderChallenge();renderHabits();renderJournal();renderArcana();renderMap();renderFood();renderSpiritual();renderDashboardCustomizer();renderOverviewCalendar();
 }
 
