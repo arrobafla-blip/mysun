@@ -62,7 +62,7 @@ function renderDashboardCustomizer(){
 
 
 function selectOverviewDate(value){
- if(!/^\\d{4}-\\d{2}-\\d{2}$/.test(value))return;
+ if(!/^\d{4}-\d{2}-\d{2}$/.test(value))return;
  overviewSelectedDate=value;overviewMonth=value.slice(0,7);
  ["foodEntryDate","trainingDate","sleepDate","moodDate","selfcareDate","journalEntryDate"].forEach(id=>{const el=document.getElementById(id);if(el)el.value=value});
  const fm=document.getElementById("foodCalendarMonth");if(fm)fm.value=overviewMonth;
