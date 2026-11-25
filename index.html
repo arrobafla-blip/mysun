@@ -27,6 +27,9 @@
         <button class="nav-link" data-page="journal"><span>♡</span> Meu diário</button>
         <button class="nav-link" data-page="arcana"><span>✴</span> Minha coleção</button>
         <button class="nav-link" data-page="food"><span>♧</span> Alimentação</button>
+        <button class="nav-link" data-page="tasks"><span>☷</span> Minha lista</button>
+        <button class="nav-link" data-page="wishlist"><span>♡</span> Wishlist</button>
+        <button class="nav-link" data-page="market"><span>🛒</span> Mercado</button>
         <button class="nav-link" data-page="monthlygoals"><span>✧</span> Metas do mês</button>
         <button class="nav-link" data-page="training"><span>↗</span> Meus treinos</button>
         <button class="nav-link" data-page="cycle"><span>☾</span> Meu ciclo</button>
@@ -59,7 +62,7 @@
 
       <section class="page active" id="page-home">
         <div class="welcome">
-          <div><p class="eyebrow">SEU NOVO CAPÍTULO COMEÇA AQUI</p><h1>Bom dia, <em>Flá.</em></h1><p class="muted">Não precisa ser perfeito. Só precisa ser seu.</p></div>
+          <div><p class="eyebrow">SEU NOVO CAPÍTULO COMEÇA AQUI</p><h1><span id="greetingText">Bom dia</span>, <em>Flá.</em></h1><p class="muted">Não precisa ser perfeito. Só precisa ser seu.</p></div>
           <div class="welcome-sun">☼</div>
         </div>
         <div class="hero-grid">
@@ -86,6 +89,7 @@
         </article>
         <article class="card overview-day-card">
           <div class="card-top"><div><p class="eyebrow">RESUMO DO DIA</p><h2 id="overviewDayTitle">Hoje</h2></div><span class="pill" id="overviewDayStatus">Acompanhe seus registros</span></div>
+          <div class="overview-date-edit"><label>Visualizando / editando o dia <input id="overviewEditDate" type="date"></label><span class="muted small">Você pode registrar atividades em qualquer data.</span></div>
           <div class="overview-metrics" id="overviewDayMetrics"></div>
           <div class="overview-details" id="overviewDayDetails"></div>
         </article>
@@ -322,6 +326,42 @@
         <div class="page-intro"><p class="eyebrow">A VIDA TAMBÉM ACONTECE FORA DA ROTINA</p><h1>Minha <em>Life List</em></h1><p class="muted">Uma lista viva de experiências, aventuras, aprendizados e coisas que você quer fazer — grandes ou pequenas.</p></div>
         <article class="card feature-form-card"><p class="eyebrow">ADICIONAR À LISTA</p><form id="lifeForm" class="feature-form"><label>O que você quer viver?<input id="lifeTitle" maxlength="100" required placeholder="Ex.: fazer uma aula de cerâmica"></label><div class="feature-form-grid"><label>Categoria<select id="lifeCategory"><option>Experiências</option><option>Viagens</option><option>Aprendizado</option><option>Família</option><option>Amizades</option><option>Coragem</option><option>Projetos pessoais</option><option>Outros</option></select></label><label>Quando gostaria?<input id="lifeDate" type="date"></label></div><button class="primary-btn">Adicionar à minha Life List</button></form></article>
         <div class="section-heading"><div><p class="eyebrow">SEUS DESEJOS EM MOVIMENTO</p><h2>O que quero viver</h2></div><span class="pill" id="lifeCount">0 itens</span></div><div id="lifeList" class="life-list"></div>
+      </section>
+      <section class="page" id="page-tasks">
+        <div class="page-intro"><p class="eyebrow">TIRE AS PENDÊNCIAS DA CABEÇA</p><h1>Minha <em>lista</em></h1><p class="muted">Tudo o que você precisa lembrar de fazer, mesmo quando ainda não tem uma data definida.</p></div>
+        <article class="card feature-form-card"><p class="eyebrow">NOVA PENDÊNCIA</p><form id="taskForm" class="feature-form">
+          <label>O que preciso fazer?<input id="taskTitle" maxlength="120" required placeholder="Ex.: pesquisar uma cadeira para o escritório"></label>
+          <div class="feature-form-grid"><label>Categoria<select id="taskCategory"><option>Pessoal</option><option>Casa</option><option>Família</option><option>Trabalho</option><option>Saúde</option><option>Financeiro</option><option>Estudos</option><option>Outros</option></select></label><label>Prioridade<select id="taskPriority"><option value="normal">Normal</option><option value="alta">Alta</option><option value="baixa">Baixa</option></select></label></div>
+          <div class="feature-form-grid"><label>Prazo (opcional)<input id="taskDue" type="date"></label><label>Observações (opcional)<input id="taskNotes" maxlength="220" placeholder="Detalhes ou lembretes"></label></div>
+          <button class="primary-btn">Adicionar à minha lista</button>
+        </form></article>
+        <div class="section-heading"><div><p class="eyebrow">O QUE ESTÁ PENDENTE</p><h2>Minhas tarefas</h2></div><span class="pill" id="taskCount">0 pendências</span></div>
+        <div class="list-filters"><label>Categoria<select id="taskFilter"><option value="">Todas as categorias</option><option>Pessoal</option><option>Casa</option><option>Família</option><option>Trabalho</option><option>Saúde</option><option>Financeiro</option><option>Estudos</option><option>Outros</option></select></label><label>Status<select id="taskStatusFilter"><option value="open">Pendentes</option><option value="all">Todas</option><option value="done">Concluídas</option></select></label></div>
+        <div id="taskList" class="task-list"></div>
+      </section>
+      <section class="page" id="page-wishlist">
+        <div class="page-intro"><p class="eyebrow">DESEJOS COM ESPAÇO PARA ACONTECER</p><h1>Minha <em>wishlist</em></h1><p class="muted">Guarde ideias de coisas que deseja comprar, compare valores e deixe os links à mão.</p></div>
+        <div class="wishlist-summary"><article class="card"><p class="eyebrow">TOTAL DOS DESEJOS ATIVOS</p><strong id="wishlistTotal">R$ 0,00</strong></article><article class="card"><p class="eyebrow">ITENS NA LISTA</p><strong id="wishlistCount">0</strong></article></div>
+        <article class="card feature-form-card"><p class="eyebrow">ADICIONAR À WISHLIST</p><form id="wishlistForm" class="feature-form">
+          <label>Nome do item<input id="wishName" maxlength="120" required placeholder="Ex.: bolsa, perfume, cadeira..."></label>
+          <div class="feature-form-grid"><label>Valor estimado (R$)<input id="wishValue" type="number" min="0" step="0.01" placeholder="0,00"></label><label>Categoria<select id="wishCategory"><option>Moda</option><option>Beleza</option><option>Casa</option><option>Tecnologia</option><option>Livros</option><option>Experiências</option><option>Zoe e família</option><option>Viagens</option><option>Outros</option></select></label></div>
+          <label>Link do produto (opcional)<input id="wishLink" type="url" placeholder="https://..."></label><label>Observações (opcional)<input id="wishNotes" maxlength="220" placeholder="Cor, tamanho, modelo..."></label><button class="primary-btn">Adicionar desejo</button>
+        </form></article>
+        <div class="section-heading"><div><p class="eyebrow">SEUS DESEJOS</p><h2>Lista de compras futuras</h2></div><label class="month-picker">Categoria<select id="wishFilter"><option value="">Todas</option><option>Moda</option><option>Beleza</option><option>Casa</option><option>Tecnologia</option><option>Livros</option><option>Experiências</option><option>Zoe e família</option><option>Viagens</option><option>Outros</option></select></label></div>
+        <div class="table-scroll"><table class="wishlist-table"><thead><tr><th>Item</th><th>Valor</th><th>Categoria</th><th>Link</th><th>Status</th><th></th></tr></thead><tbody id="wishlistRows"></tbody></table></div>
+      </section>
+      <section class="page" id="page-market">
+        <div class="page-intro"><p class="eyebrow">REPOSIÇÃO DA CASA</p><h1>Lista de <em>mercado</em></h1><p class="muted">Anote o que está acabando assim que perceber. A lista fica aqui até você fazer as compras.</p></div>
+        <article class="card feature-form-card"><p class="eyebrow">ADICIONAR PRODUTO</p><form id="marketForm" class="feature-form">
+          <label>O que precisa comprar?<input id="marketName" maxlength="100" required placeholder="Ex.: leite, detergente, banana..."></label>
+          <div class="feature-form-grid"><label>Categoria<select id="marketCategory"><option>Hortifruti</option><option>Mercearia</option><option>Açougue e frios</option><option>Laticínios</option><option>Limpeza</option><option>Higiene</option><option>Bebidas</option><option>Congelados</option><option>Outros</option></select></label><label>Quantidade<input id="marketQty" maxlength="40" placeholder="Ex.: 2 unidades, 1 kg"></label></div>
+          <div class="feature-form-grid"><label>Prioridade<select id="marketPriority"><option value="normal">Normal</option><option value="urgente">Urgente</option></select></label><label>Observações (opcional)<input id="marketNotes" maxlength="180" placeholder="Marca, tamanho, detalhe..."></label></div>
+          <button class="primary-btn">Adicionar à lista de mercado</button>
+        </form></article>
+        <div class="section-heading"><div><p class="eyebrow">PARA A PRÓXIMA COMPRA</p><h2>Itens para comprar</h2></div><span class="pill" id="marketCount">0 itens</span></div>
+        <div class="list-filters"><label>Categoria<select id="marketFilter"><option value="">Todas as categorias</option><option>Hortifruti</option><option>Mercearia</option><option>Açougue e frios</option><option>Laticínios</option><option>Limpeza</option><option>Higiene</option><option>Bebidas</option><option>Congelados</option><option>Outros</option></select></label><button type="button" class="secondary-btn" id="marketReplenish">Repor estoque / adicionar frequentes</button></div>
+        <div id="marketList" class="market-list"></div>
+        <div class="section-heading compact"><div><p class="eyebrow">ITENS COMPRADOS</p><h2>Histórico da compra</h2></div><button type="button" class="text-button" id="marketClearDone">Limpar comprados</button></div><div id="marketDoneList" class="market-list"></div>
       </section>
       <section class="page" id="page-selfcare">
         <div class="page-intro"><p class="eyebrow">UM CARDÁPIO DE POSSIBILIDADES</p><h1>Autocuidado <em>& presença</em></h1><p class="muted">Escolha algo que combine com seu tempo, sua energia e seu momento. Não é uma lista de obrigações.</p></div>
