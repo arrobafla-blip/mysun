@@ -243,4 +243,5 @@ document.getElementById("importFile").addEventListener("change",async e=>{const 
 document.getElementById("overviewPrev").addEventListener("click",()=>{const [y,m]=overviewMonth.split("-").map(Number),d=new Date(y,m-2,1);selectOverviewDate(d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-01")});
 document.getElementById("overviewNext").addEventListener("click",()=>{const [y,m]=overviewMonth.split("-").map(Number),d=new Date(y,m,1);selectOverviewDate(d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-01")});
 document.getElementById("overviewEditDate").addEventListener("change",e=>{if(e.target.value)selectOverviewDate(e.target.value)});
+["foodEntryDate","trainingDate","sleepDate","moodDate","selfcareDate","journalEntryDate","cycleStartDate"].forEach(id=>{const el=document.getElementById(id);if(el)el.addEventListener("change",()=>{if(el.value&&el.value!==overviewSelectedDate)selectOverviewDate(el.value)})});
 render();
